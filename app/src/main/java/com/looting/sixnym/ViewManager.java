@@ -23,6 +23,15 @@ public class ViewManager {
         cardPlayed = editText;
     }
 
+    public int getCardPlayed(){
+        try{
+            return Integer.parseInt(cardPlayed.getText().toString());
+        }catch(NumberFormatException nfe){
+            return -1;
+        }
+
+    }
+
     public void displayRows(ArrayList<CardRow> cardRows){
         row1.setText("Row 1: " + cardRows.get(0).displayRow());
         row2.setText("Row 2: " + cardRows.get(1).displayRow());
@@ -35,12 +44,8 @@ public class ViewManager {
     }
 
     public boolean checkCard(int size){
-        int cardPlay = 0;
-        try{
-            cardPlay = Integer.parseInt(cardPlayed.getText().toString());
-        }catch(NumberFormatException nfe){
-            return false;
-        }
+        int cardPlay = this.getCardPlayed();
+
         if(cardPlay > size || cardPlay < 1){
             return false;
         }else{

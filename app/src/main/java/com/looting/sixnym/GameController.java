@@ -50,6 +50,9 @@ public class GameController {
                 turn++;
                 if(turn%pArray.size() == 0){
                     //Add to row/Get row
+                    this.placeCardOnRow(pArray.get(turn%pArray.size()).playCard(vm.getCardPlayed()));
+                    displayPlayerHands(turn%(pArray.size()));
+                    vm.nextTurn();
                 }else{
                     displayPlayerHands((turn % (pArray.size())));
                     vm.nextTurn();
