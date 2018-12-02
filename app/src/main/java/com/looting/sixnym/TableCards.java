@@ -71,10 +71,26 @@ public class TableCards {
     public void dealCards(ArrayList<Player> pArray){
         int count = 0;
         for(int i = 0; i < (pArray.size() * 10); i++) {
-            if (i % 2 == 0) {
+            if (i % pArray.size() == 0) {
                 pArray.get(0).getCard(deck.dealCard());
-            } else {
+            } else if (i % pArray.size() == 1) {
                 pArray.get(1).getCard(deck.dealCard());
+            } else if (i % pArray.size() == 2) {
+                pArray.get(2).getCard(deck.dealCard());
+            } else if (i % pArray.size() == 3) {
+                pArray.get(3).getCard(deck.dealCard());
+            } else if (i % pArray.size() == 4) {
+                pArray.get(4).getCard(deck.dealCard());
+            } else if (i % pArray.size() == 5) {
+                pArray.get(5).getCard(deck.dealCard());
+            } else if (i % pArray.size() == 6) {
+                pArray.get(6).getCard(deck.dealCard());
+            } else if (i % pArray.size() == 7) {
+                pArray.get(7).getCard(deck.dealCard());
+            } else if (i % pArray.size() == 8) {
+                pArray.get(8).getCard(deck.dealCard());
+            } else if (i % pArray.size() == 9) {
+                pArray.get(9).getCard(deck.dealCard());
             }
         }
         cardRows.get(0).addToRow(deck.dealCard());

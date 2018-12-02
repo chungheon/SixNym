@@ -26,6 +26,7 @@ public class SinglePlayer extends Activity {
         Player p3 = new Player("Misun");
         players.add(p1);
         players.add(p2);
+        players.add(p3);
         TextView hands = (TextView) findViewById(R.id.handCards);
         TextView row1 = (TextView) findViewById(R.id.firstRow);
         TextView row2 = (TextView) findViewById(R.id.secondRow);
