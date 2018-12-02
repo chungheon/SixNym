@@ -29,7 +29,7 @@ public class CardRow {
     }
 
     public int getTopCard() {
-        return cardArray.get(cardArray.size() - 1).getFaceValue();
+            return this.cardArray.get(cardArray.size() - 1).getFaceValue();
     }
 
     public int getPoints(){

@@ -143,4 +143,9 @@ public class TableCards {
         }
         return topCards;
     }
+
+
+    public CardRow getCardRow(int idx) {
+        return cardRows.get(idx);
+    }
 }

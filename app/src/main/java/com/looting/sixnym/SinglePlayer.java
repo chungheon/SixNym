@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ public class SinglePlayer extends Activity {
         ArrayList<Player> players = new ArrayList<Player>();
         Player p1 = new Player("Player 1");
         Player p2 = new Player("Player 2");
+        Player p3 = new Player("Misun");
         players.add(p1);
         players.add(p2);
         TextView hands = (TextView) findViewById(R.id.handCards);
@@ -30,12 +32,18 @@ public class SinglePlayer extends Activity {
         TextView row3 = (TextView) findViewById(R.id.thirdRow);
         TextView row4 = (TextView) findViewById(R.id.fourthRow);
         EditText editText =(EditText) findViewById(R.id.cardPlayed);
-        ViewManager vm = new ViewManager(hands, row1, row2, row3, row4, editText);
+        Button playBtn = (Button) findViewById(R.id.playCard);
+        Button selectBtn = (Button) findViewById(R.id.selectButton);
+        ViewManager vm = new ViewManager(hands, row1, row2, row3, row4, editText, playBtn, selectBtn);
         gameController = new GameController(tb, vm, players);
         gameController.startGame();
     }
 
     public void playCard(View view){
         gameController.playCard();
+    }
+
+    public void selectRow(View view) {
+        gameController.selectRow();
     }
 }

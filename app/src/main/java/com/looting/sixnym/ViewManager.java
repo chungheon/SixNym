@@ -1,5 +1,7 @@
 package com.looting.sixnym;
 
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -12,15 +14,21 @@ public class ViewManager {
     TextView row3;
     TextView row4;
     EditText cardPlayed;
+    Button playBtn;
+    Button selectBtn;
 
 
-    ViewManager(TextView hands, TextView one, TextView two, TextView three, TextView four, EditText editText){
-        handCards = hands;
-        row1 = one;
-        row2 = two;
-        row3 = three;
-        row4 = four;
-        cardPlayed = editText;
+    ViewManager(TextView hands, TextView one, TextView two, TextView three, TextView four, EditText editText, Button playBtn, Button selectBtn){
+        this.handCards = hands;
+        this.row1 = one;
+        this.row2 = two;
+        this.row3 = three;
+        this.row4 = four;
+        this.cardPlayed = editText;
+        this.playBtn = playBtn;
+        this.selectBtn = selectBtn;
+        this.selectBtn.setVisibility(View.GONE);
+
     }
 
     public int getCardPlayed(){
@@ -31,6 +39,7 @@ public class ViewManager {
         }
 
     }
+
 
     public void displayRows(ArrayList<CardRow> cardRows){
         row1.setText("Row 1: " + cardRows.get(0).displayRow());
@@ -52,6 +61,17 @@ public class ViewManager {
             return true;
         }
 
+    }
+
+    public void selectRowDialog(String displayMessage) {
+        handCards.setText(displayMessage);
+        playBtn.setVisibility(View.GONE);
+        selectBtn.setVisibility(View.VISIBLE);
+    }
+
+    public void endRowDialog() {
+        playBtn.setVisibility(View.VISIBLE);
+        selectBtn.setVisibility(View.GONE);
     }
 
     public void nextTurn(){
