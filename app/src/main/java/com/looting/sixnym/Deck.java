@@ -33,4 +33,6 @@ public class Deck {
 
     //Shuffle the cards in the deck
     public void shuffleDeck(){ Collections.shuffle(deckOfCards); }
+
+    public int getSize(){ return deckOfCards.size();}
 }

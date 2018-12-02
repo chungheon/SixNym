@@ -24,6 +24,7 @@ public class GameController {
     private ViewManager vm;
     private ArrayList<Player> pArray;
     private ArrayList<Card> cardsPlayed;
+    private int turn;
 
     public GameController(TableCards tb, ViewManager vm, ArrayList<Player> pArray){
         this.tb = tb;
@@ -37,11 +38,25 @@ public class GameController {
     public void startGame(){
         dealCards();
         updateRows();
-        displayPlayerHands(1);
+        turn = 0;
+        displayPlayerHands((turn % (pArray.size())));
+    }
+
+    public void playCard(){
+        if(turn == (pArray.size() * 10) - 1){
+            //End game
+        }else{
+            if(vm.checkCard(pArray.get((turn % (pArray.size()))).handSize())){
+                turn++;
+                displayPlayerHands((turn % (pArray.size())));
+                vm.nextTurn();
+            }
+        }
+
     }
 
     private void displayPlayerHands(int playerTurn){
-        vm.displayPlayerHands(pArray.get(playerTurn-1).getName(), pArray.get(playerTurn-1).getPlayerCards());
+        vm.displayPlayerHands(pArray.get(playerTurn).getName() + '\n', pArray.get(playerTurn).getPlayerCards());
     }
 
     private void updateRows(){

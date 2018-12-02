@@ -35,7 +35,7 @@ public class Player {
         playerCards += "Please select a card to play: " + '\n';
         for(int i = 0; i < hand.size(); i++)
         {
-            Card card = hand.get(0);
+            Card card = hand.get(i);
             playerCards += "Card " + Integer.toString(i + 1) + " - face value: ";
             playerCards += Integer.toString(card.getFaceValue());
             playerCards += " Point value: " + Integer.toString(card.getPointValue());
