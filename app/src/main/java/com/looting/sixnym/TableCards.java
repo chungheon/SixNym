@@ -88,7 +88,7 @@ public class TableCards {
     }
 
     public void fillDeck(int numPlayers){
-        for(int i = 0; i < (numPlayers*10) + 4 ; i++){
+        for(int i = 1; i <= (numPlayers*10) + 4 ; i++){
             Card card = new Card();
             if(i == 55) {
                 card.setCard(55, 7);

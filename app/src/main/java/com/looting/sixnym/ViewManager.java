@@ -57,4 +57,8 @@ public class ViewManager {
     public void nextTurn(){
         cardPlayed.setText("");
     }
+
+    public void endRound(){
+        handCards.setText("Now to disseminate the cards to the rows");
+    }
 }

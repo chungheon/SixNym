@@ -20,17 +20,26 @@ import java.util.ArrayList;
 
 public class GameController {
 
+    public class CardPlayed{
+        public Card card;
+        public int playerIndex;
+        public CardPlayed(Card c, int p){
+            card = c;
+            playerIndex = p;
+        }
+    }
+
     private TableCards tb;
     private ViewManager vm;
     private ArrayList<Player> pArray;
-    private ArrayList<Card> cardsPlayed;
+    private ArrayList<CardPlayed> cardsPlayed;
     private int turn;
 
     public GameController(TableCards tb, ViewManager vm, ArrayList<Player> pArray){
         this.tb = tb;
         this.vm = vm;
         this.pArray = pArray;
-        cardsPlayed = new ArrayList<Card>();
+        cardsPlayed = new ArrayList<CardPlayed>();
         tb.fillDeck(pArray.size());
         tb.shuffleDeck();
     }
@@ -42,19 +51,26 @@ public class GameController {
         displayPlayerHands((turn % (pArray.size())));
     }
 
+
+
     public void playCard(){
+        int player = turn%pArray.size();
+        Card c = pArray.get(player).playCard(vm.getCardPlayed()-1);
+        CardPlayed cp = new CardPlayed(c, player);
+        this.cardsPlayed.add(cp);
         if(turn == (pArray.size() * 10) - 1) {
             //End game
         }else{
-            if(vm.checkCard(pArray.get((turn % (pArray.size()))).handSize())){
+            if(vm.checkCard(pArray.get(player).handSize())){
                 turn++;
-                if(turn%pArray.size() == 0){
+                player = turn%pArray.size();
+                if(player == 0){
                     //Add to row/Get row
-                    this.placeCardOnRow(pArray.get(turn%pArray.size()).playCard(vm.getCardPlayed()));
-                    displayPlayerHands(turn%(pArray.size()));
+                    updateRows();
+                    displayPlayerHands(player);
                     vm.nextTurn();
                 }else{
-                    displayPlayerHands((turn % (pArray.size())));
+                    displayPlayerHands(player);
                     vm.nextTurn();
                 }
             }
