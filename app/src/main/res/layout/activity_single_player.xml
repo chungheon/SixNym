@@ -46,5 +46,16 @@
         android:paddingBottom="10dp"
         android:text="Cards in the fourth row will be displayed here"/>
 
+    <EditText
+        android:id="@+id/cardPlayed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/playCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="playCard"
+        android:text="Play Card"/>
 
 </LinearLayout>

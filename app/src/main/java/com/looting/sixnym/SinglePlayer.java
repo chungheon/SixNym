@@ -3,6 +3,7 @@ package com.looting.sixnym;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -27,9 +28,9 @@ public class SinglePlayer extends Activity {
         TextView row2 = (TextView) findViewById(R.id.secondRow);
         TextView row3 = (TextView) findViewById(R.id.thirdRow);
         TextView row4 = (TextView) findViewById(R.id.fourthRow);
-        ViewManager vm = new ViewManager(hands, row1, row2, row3, row4);
+        EditText editText =(EditText) findViewById(R.id.cardPlayed);
+        ViewManager vm = new ViewManager(hands, row1, row2, row3, row4, editText);
         gameController = new GameController(tb, vm, players);
-        gameController.dealCards();
-        gameController.cardPhase(1);
+        gameController.startGame();
     }
 }

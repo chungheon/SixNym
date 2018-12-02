@@ -34,15 +34,21 @@ public class GameController {
         tb.shuffleDeck();
     }
 
-    public void displayPlayerHands(int playerTurn){
+    public void startGame(){
+        dealCards();
+        updateRows();
+        displayPlayerHands(1);
+    }
+
+    private void displayPlayerHands(int playerTurn){
         vm.displayPlayerHands(pArray.get(playerTurn-1).getName(), pArray.get(playerTurn-1).getPlayerCards());
     }
 
-    public void updateRows(){
+    private void updateRows(){
         vm.displayRows(tb.getCardRows());
     }
 
-    public void dealCards(){
+    private void dealCards(){
         tb.dealCards(pArray);
     }
 }
