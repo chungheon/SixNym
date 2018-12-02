@@ -83,7 +83,7 @@ public class GameController {
         int cntRow = 0;
         for (int tC: topCards) {
             if (cTBP > tC && tC > closestLowerCard) {
-                closestLowerCard = cTBP;
+                closestLowerCard = tC;
                 cntRow = cnt;
             }
             cnt++;
