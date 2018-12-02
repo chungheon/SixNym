@@ -63,7 +63,8 @@ public class ViewManager {
 
     }
 
-    public void selectRowDialog() {
+    public void selectRowDialog(String displayMessage) {
+        handCards.setText(displayMessage);
         playBtn.setVisibility(View.GONE);
         selectBtn.setVisibility(View.VISIBLE);
     }

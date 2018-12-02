@@ -23,6 +23,7 @@ public class SinglePlayer extends Activity {
         ArrayList<Player> players = new ArrayList<Player>();
         Player p1 = new Player("Player 1");
         Player p2 = new Player("Player 2");
+        Player p3 = new Player("Misun");
         players.add(p1);
         players.add(p2);
         TextView hands = (TextView) findViewById(R.id.handCards);
