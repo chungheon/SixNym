@@ -1,5 +1,6 @@
 package com.looting.sixnym;
 
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -10,13 +11,16 @@ public class ViewManager {
     TextView row2;
     TextView row3;
     TextView row4;
+    EditText cardPlayed;
 
-    ViewManager(TextView hands, TextView one, TextView two, TextView three, TextView four){
+
+    ViewManager(TextView hands, TextView one, TextView two, TextView three, TextView four, EditText editText){
         handCards = hands;
         row1 = one;
         row2 = two;
         row3 = three;
         row4 = four;
+        cardPlayed = editText;
     }
 
     public void displayRows(ArrayList<CardRow> cardRows){
@@ -28,5 +32,15 @@ public class ViewManager {
 
     public void displayPlayerHands(String playerName, String playersHand){
         handCards.setText(playerName + playersHand);
+    }
+
+    public boolean confirmCard(){
+        try{
+            int cardPlay = Integer.parseInt(cardPlayed.getText().toString());
+        }catch(NumberFormatException nfe){
+            return false;
+        }
+        return true;
+
     }
 }
