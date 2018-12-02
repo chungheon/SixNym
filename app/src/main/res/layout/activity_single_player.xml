@@ -52,6 +52,13 @@
         android:layout_height="wrap_content" />
 
     <Button
+        android:id="@+id/selectButton"
+        android:layout_width="102dp"
+        android:layout_height="wrap_content"
+        android:onClick="selectRow"
+        android:text="Select Row" />
+
+    <Button
         android:id="@+id/playCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

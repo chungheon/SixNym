@@ -17,15 +17,23 @@ package com.looting.sixnym;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class GameController {
 
-    public class CardPlayed{
+    public class CardPlayed implements Comparable<CardPlayed> {
         public Card card;
         public int playerIndex;
         public CardPlayed(Card c, int p){
             card = c;
             playerIndex = p;
+        }
+
+        public int getCard(){return card.getFaceValue();}
+
+        public int compareTo(CardPlayed otherCard) {
+            return (this.getCard() - otherCard.getCard());
         }
     }
 
@@ -65,7 +73,8 @@ public class GameController {
                 turn++;
                 player = turn%pArray.size();
                 if(player == 0){
-                    //Add to row/Get row
+                    Collections.sort(cardsPlayed);
+                    playCards();
                     updateRows();
                     displayPlayerHands(player);
                     vm.nextTurn();
@@ -95,8 +104,8 @@ public class GameController {
         topCards = this.tb.getTopCardsOnAllRows();
         int cTBP = cardToBePlaced.getFaceValue();
         int closestLowerCard = 0;
-        int cnt = 1;
-        int cntRow = 0;
+        int cnt = 0;
+        int cntRow = -1;
         for (int tC: topCards) {
             if (cTBP > tC && tC > closestLowerCard) {
                 closestLowerCard = tC;
@@ -104,7 +113,27 @@ public class GameController {
             }
             cnt++;
         }
-        this.tb.getCardRows().get(cntRow).addToRow(cardToBePlaced);
+        if (closestLowerCard == 0) {
+            vm.selectRowDialog();
+        } else {
+            this.tb.getCardRows().get(cntRow).addToRow(cardToBePlaced);
+        }
+    }
 
+    private void playCards() {
+        for (CardPlayed cP : this.cardsPlayed) {
+            this.placeCardOnRow(cP.card);
+        }
+    }
+
+    public void selectRow(){
+        int rowSelected = vm.getCardPlayed();
+        int cardRowSize = tb.getCardRow(rowSelected-1).getSize();
+        CardRow cardRow = tb.getCardRow(rowSelected-1);
+        for (int i = 0; i < cardRowSize;i++ ) {
+            pArray.get(cardsPlayed.get(0).playerIndex).addPoints(cardRow.removeFromRow());
+        }
+        this.tb.getCardRows().get(rowSelected).addToRow(cardsPlayed.get(0).card);
+        vm.endRowDialog();
     }
 }
