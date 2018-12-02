@@ -75,10 +75,19 @@ public class GameController {
                 player = turn%pArray.size();
                 if(player == 0){
                     Collections.sort(cardsPlayed);
-                    playCards();
-                    updateRows();
-                    displayPlayerHands(player);
-                    vm.nextTurn();
+                    if(closestRow(cardsPlayed.get(0).card) == -1){
+                        String message = "";
+                        for(CardPlayed cardP: this.cardsPlayed){
+                            message += pArray.get(cardP.playerIndex).getName() + " played " + cardP.card.displayCard() + '\n';
+                        }
+                        vm.selectRowDialog(message);
+                        vm.nextTurn();
+                    }else{
+                        playCards();
+                        updateRows();
+                        displayPlayerHands(0);
+                        vm.nextTurn();
+                    }
                 }else{
                     displayPlayerHands(player);
                     vm.nextTurn();
@@ -101,8 +110,15 @@ public class GameController {
     }
 
     private void placeCardOnRow(Card cardToBePlaced){
-        ArrayList<Integer> topCards = new ArrayList<Integer>();
-        topCards = this.tb.getTopCardsOnAllRows();
+        int cntRow = closestRow(cardToBePlaced);
+
+        if (cntRow != -1) {
+            this.tb.getCardRows().get(cntRow).addToRow(cardToBePlaced);
+        }
+    }
+
+    private int closestRow(Card cardToBePlaced){
+        ArrayList<Integer> topCards = this.tb.getTopCardsOnAllRows();
         int cTBP = cardToBePlaced.getFaceValue();
         int closestLowerCard = 0;
         int cnt = 0;
@@ -114,27 +130,31 @@ public class GameController {
             }
             cnt++;
         }
-        if (closestLowerCard == 0) {
-            vm.selectRowDialog();
-        } else {
-            this.tb.getCardRows().get(cntRow).addToRow(cardToBePlaced);
-        }
+
+        return cntRow;
     }
 
     private void playCards() {
         for (CardPlayed cP : this.cardsPlayed) {
             this.placeCardOnRow(cP.card);
         }
+        this.cardsPlayed.clear();
     }
 
     public void selectRow(){
-        int rowSelected = vm.getCardPlayed();
-        int cardRowSize = tb.getCardRow(rowSelected-1).getSize();
-        CardRow cardRow = tb.getCardRow(rowSelected-1);
+        int rowSelected = vm.getCardPlayed()-1;
+        int cardRowSize = tb.getCardRow(rowSelected).getSize();
+        CardRow cardRow = tb.getCardRow(rowSelected);
         for (int i = 0; i < cardRowSize;i++ ) {
             pArray.get(cardsPlayed.get(0).playerIndex).addPoints(cardRow.removeFromRow());
         }
         this.tb.getCardRows().get(rowSelected).addToRow(cardsPlayed.get(0).card);
+        this.cardsPlayed.remove(0);
         vm.endRowDialog();
+
+        playCards();
+        updateRows();
+        displayPlayerHands(0);
+        vm.nextTurn();
     }
 }

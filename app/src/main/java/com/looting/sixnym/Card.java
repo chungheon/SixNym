@@ -43,4 +43,8 @@ public class Card {
     public int getPointValue() {
         return pointValue;
     }
+
+    public String displayCard() {
+        return "FV: " + Integer.toString(faceValue) + " PV: " + Integer.toString(pointValue);
+    }
 }
