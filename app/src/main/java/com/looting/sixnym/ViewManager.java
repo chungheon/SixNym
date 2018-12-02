@@ -34,13 +34,22 @@ public class ViewManager {
         handCards.setText(playerName + playersHand);
     }
 
-    public boolean confirmCard(){
+    public boolean checkCard(int size){
+        int cardPlay = 0;
         try{
-            int cardPlay = Integer.parseInt(cardPlayed.getText().toString());
+            cardPlay = Integer.parseInt(cardPlayed.getText().toString());
         }catch(NumberFormatException nfe){
             return false;
         }
-        return true;
+        if(cardPlay > size || cardPlay < 1){
+            return false;
+        }else{
+            return true;
+        }
 
+    }
+
+    public void nextTurn(){
+        cardPlayed.setText("");
     }
 }
