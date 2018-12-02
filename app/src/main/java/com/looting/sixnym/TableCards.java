@@ -135,4 +135,14 @@ public class TableCards {
 
         return lowestRow;
     }
+
+    private ArrayList<String> getTopCardsOnAllRows(){
+        ArrayList<String> topCards = new ArrayList<String>();
+        int cnt = 1;
+        for (CardRow cR : cardRows) {
+            topCards.add(cnt + "," + cR.getTopCard());
+            cnt++;
+        }
+        return topCards;
+    }
 }
