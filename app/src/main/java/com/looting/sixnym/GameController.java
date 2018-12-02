@@ -34,24 +34,12 @@ public class GameController {
         tb.shuffleDeck();
     }
 
-    public void cardPhase(){
-        vm.displayPlayerHands(getPlayerCards());
-        vm.displayRows(tb.getCardRows());
+    public void displayPlayerHands(int playerTurn){
+        vm.displayPlayerHands(pArray.get(playerTurn-1).getName(), pArray.get(playerTurn-1).getPlayerCards());
     }
 
-    public String getPlayerCards(){
-        String playerCards = "";
-        playerCards += "Please select a card to play: " + '\n';
-        for(int i = 0; i < pArray.get(0).handSize(); i++)
-        {
-            Card card = pArray.get(0).displayCard(i);
-            playerCards += "Card " + Integer.toString(i + 1) + " - face value: ";
-            playerCards += Integer.toString(card.getFaceValue());
-            playerCards += " Point value: " + Integer.toString(card.getPointValue());
-            playerCards += '\n';
-        }
-
-        return playerCards;
+    public void updateRows(){
+        vm.displayRows(tb.getCardRows());
     }
 
     public void dealCards(){

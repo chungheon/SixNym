@@ -26,7 +26,7 @@ public class ViewManager {
         row4.setText("Row 4: " + cardRows.get(3).displayRow());
     }
 
-    public void displayPlayerHands(String playersHand){
-        handCards.setText(playersHand);
+    public void displayPlayerHands(String playerName, String playersHand){
+        handCards.setText(playerName + playersHand);
     }
 }

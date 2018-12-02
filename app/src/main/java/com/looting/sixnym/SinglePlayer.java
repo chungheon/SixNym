@@ -30,6 +30,6 @@ public class SinglePlayer extends Activity {
         ViewManager vm = new ViewManager(hands, row1, row2, row3, row4);
         gameController = new GameController(tb, vm, players);
         gameController.dealCards();
-        gameController.cardPhase();
+        gameController.cardPhase(1);
     }
 }
