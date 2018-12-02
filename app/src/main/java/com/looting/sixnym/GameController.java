@@ -43,6 +43,7 @@ public class GameController {
     private ArrayList<CardPlayed> cardsPlayed;
     private int turn;
 
+
     public GameController(TableCards tb, ViewManager vm, ArrayList<Player> pArray){
         this.tb = tb;
         this.vm = vm;
