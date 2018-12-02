@@ -43,13 +43,17 @@ public class GameController {
     }
 
     public void playCard(){
-        if(turn == (pArray.size() * 10) - 1){
+        if(turn == (pArray.size() * 10) - 1) {
             //End game
         }else{
             if(vm.checkCard(pArray.get((turn % (pArray.size()))).handSize())){
                 turn++;
-                displayPlayerHands((turn % (pArray.size())));
-                vm.nextTurn();
+                if(turn%pArray.size() == 0){
+                    //Add to row/Get row
+                }else{
+                    displayPlayerHands((turn % (pArray.size())));
+                    vm.nextTurn();
+                }
             }
         }
 
