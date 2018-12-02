@@ -52,5 +52,21 @@ public class GameController {
         tb.dealCards(pArray);
     }
 
+    private void placeCardOnRow(Card cardToBePlaced){
+        ArrayList<Integer> topCards = new ArrayList<Integer>();
+        topCards = this.tb.getTopCardsOnAllRows();
+        int cTBP = cardToBePlaced.getFaceValue();
+        int closestLowerCard = 0;
+        int cnt = 1;
+        int cntRow = 0;
+        for (int tC: topCards) {
+            if (cTBP > tC && tC > closestLowerCard) {
+                closestLowerCard = cTBP;
+                cntRow = cnt;
+            }
+            cnt++;
+        }
+        this.tb.getCardRows().get(cntRow).addToRow(cardToBePlaced);
 
+    }
 }

@@ -136,12 +136,10 @@ public class TableCards {
         return lowestRow;
     }
 
-    private ArrayList<String> getTopCardsOnAllRows(){
-        ArrayList<String> topCards = new ArrayList<String>();
-        int cnt = 1;
+    public ArrayList<Integer> getTopCardsOnAllRows(){
+        ArrayList<Integer> topCards = new ArrayList<Integer>();
         for (CardRow cR : cardRows) {
-            topCards.add(cnt + "," + cR.getTopCard());
-            cnt++;
+            topCards.add(cR.getTopCard());
         }
         return topCards;
     }
