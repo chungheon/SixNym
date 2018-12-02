@@ -55,13 +55,14 @@ public class GameController {
 
     public void playCard(){
         int player = turn%pArray.size();
-        Card c = pArray.get(player).playCard(vm.getCardPlayed()-1);
-        CardPlayed cp = new CardPlayed(c, player);
-        this.cardsPlayed.add(cp);
         if(turn == (pArray.size() * 10) - 1) {
             //End game
         }else{
             if(vm.checkCard(pArray.get(player).handSize())){
+                int cardPlay = vm.getCardPlayed() - 1;
+                Card c = this.pArray.get(player).playCard(cardPlay);
+                CardPlayed cp = new CardPlayed(c, player);
+                this.cardsPlayed.add(cp);
                 turn++;
                 player = turn%pArray.size();
                 if(player == 0){
