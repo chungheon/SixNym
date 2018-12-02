@@ -41,13 +41,16 @@ public class CardRow {
     }
 
     public String displayRow(){
-        String cards = "";
+        String card = "";
+        int count = 1;
         for(Card c: cardArray){
-            cards += "Face Value: " + Integer.toString(c.getFaceValue());
-            cards += " Point Value:" + Integer.toString(c.getPointValue());
-            cards += '\n';
+            card += "Card " + Integer.toString(count);
+            card += "Face Value: " + Integer.toString(c.getFaceValue());
+            card += " Point Value:" + Integer.toString(c.getPointValue());
+            card += '\n';
+            count++;
         }
-        return cards;
+        return card;
     }
 
     public int getSize() { return cardArray.size(); }

@@ -12,19 +12,19 @@ public class Player {
 
     private String name;
     private ArrayList<Card> hand;
-    private int points;
+    private ArrayList<Card> points;
 
     public Player(String name){
         this.name = name;
         hand = new ArrayList<>();
-        points = 0;
+        points = new ArrayList<>();
     }
 
     public Card playCard(int index) { return hand.remove(index); }
 
     public void getCard(Card c) { hand.add(c); }
 
-    public void addPoints(int pointsGained){ points += pointsGained; }
+    public void addPoints(Card cardG){ points.add(cardG); }
 
     public Card displayCard(int index) { return hand.get(index); }
 
