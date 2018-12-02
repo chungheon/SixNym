@@ -16,7 +16,6 @@ import java.util.Comparator;
 public class TableCards {
 
     private Deck deck;
-
     private ArrayList<CardRow> cardRows;
 
     public TableCards() {
