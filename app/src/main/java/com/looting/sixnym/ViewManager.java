@@ -1,8 +1,12 @@
 package com.looting.sixnym;
 
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -16,9 +20,12 @@ public class ViewManager {
     EditText cardPlayed;
     Button playBtn;
     Button selectBtn;
+    RecyclerView rv;
+    Context ct;
 
 
-    ViewManager(TextView hands, TextView one, TextView two, TextView three, TextView four, EditText editText, Button playBtn, Button selectBtn){
+    ViewManager(TextView hands, TextView one, TextView two, TextView three, TextView four, EditText editText, Button playBtn, Button selectBtn4,
+    RecyclerView rv, Context c){
         this.handCards = hands;
         this.row1 = one;
         this.row2 = two;
@@ -26,10 +33,12 @@ public class ViewManager {
         this.row4 = four;
         this.cardPlayed = editText;
         this.playBtn = playBtn;
+        this.rv = rv;
+        ct = c;
         this.selectBtn = selectBtn;
         this.selectBtn.setVisibility(View.GONE);
-
     }
+
 
     public int getCardPlayed(){
         try{
@@ -48,8 +57,10 @@ public class ViewManager {
         row4.setText("Row 4: " + cardRows.get(3).displayRow());
     }
 
-    public void displayPlayerHands(String playerName, String playersHand){
-        handCards.setText(playerName + playersHand);
+    public void displayPlayerHands(String playerName, ArrayList<String> playersHand){
+        handCards.setText(playerName + "'s turn");
+        RecyclerViewAdapter adapter =  new RecyclerViewAdapter(ct, playersHand);
+        rv.setAdapter(adapter);
     }
 
     public boolean checkCard(int size){
@@ -81,4 +92,5 @@ public class ViewManager {
     public void endRound(){
         handCards.setText("Now to disseminate the cards to the rows");
     }
+
 }

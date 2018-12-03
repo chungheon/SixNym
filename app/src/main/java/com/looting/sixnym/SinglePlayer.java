@@ -3,9 +3,12 @@ package com.looting.sixnym;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -13,6 +16,9 @@ import java.util.ArrayList;
 public class SinglePlayer extends Activity {
 
     private GameController gameController;
+
+    private ArrayList<String> mNames = new ArrayList<>();
+    private ArrayList<String> mImg = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +43,11 @@ public class SinglePlayer extends Activity {
         EditText editText =(EditText) findViewById(R.id.cardPlayed);
         Button playBtn = (Button) findViewById(R.id.playCard);
         Button selectBtn = (Button) findViewById(R.id.selectButton);
-        ViewManager vm = new ViewManager(hands, row1, row2, row3, row4, editText, playBtn, selectBtn);
+        HorizontalScrollView sv = (HorizontalScrollView) findViewById(R.id.cardDisplay);
+        RecyclerView rv = findViewById(R.id.cardDisplay);
+        LinearLayoutManager lyM = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        rv.setLayoutManager(lyM);
+        ViewManager vm = new ViewManager(hands, row1, row2, row3, row4, editText, playBtn, selectBtn, rv, this);
         gameController = new GameController(tb, vm, players);
         gameController.startGame();
     }

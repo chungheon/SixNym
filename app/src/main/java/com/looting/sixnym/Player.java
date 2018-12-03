@@ -30,18 +30,21 @@ public class Player {
 
     public Card displayCard(int index) { return hand.get(index); }
 
-    public String getPlayerCards(){
+    public ArrayList<String> getPlayerCards(){
         String playerCards = "";
+        ArrayList<String> cards = new ArrayList<>();
         playerCards += "Please select a card to play: " + '\n';
         for(int i = 0; i < hand.size(); i++)
         {
+            playerCards = "";
             Card card = hand.get(i);
             playerCards += "Card " + Integer.toString(i + 1) + " - ";
             playerCards += card.displayCard();
-            playerCards += '\n';
+            cards.add(playerCards);
+
         }
 
-        return playerCards;
+        return cards;
     }
 
     public int handSize(){ return hand.size(); }
