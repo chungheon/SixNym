@@ -47,8 +47,7 @@ public class CardRow {
 
         for(Card c: cardArray){
             card += "Card " + Integer.toString(count);
-            card += "FV: " + Integer.toString(c.getFaceValue());
-            card += " PV: " + Integer.toString(c.getPointValue());
+            card += "- " + c.displayCard();
             card += '\n';
             count++;
         }

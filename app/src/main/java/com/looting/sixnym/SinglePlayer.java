@@ -49,4 +49,7 @@ public class SinglePlayer extends Activity {
     public void selectRow(View view) {
         gameController.selectRow();
     }
+
+    @Override
+    public void onBackPressed(){ }
 }
