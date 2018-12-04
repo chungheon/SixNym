@@ -8,45 +8,63 @@ import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class ViewManager {
-    TextView handCards;
-    TextView row1;
-    TextView row2;
-    TextView row3;
-    TextView row4;
-    EditText cardPlayed;
-    Button playBtn;
-    Button selectBtn;
-    RecyclerView rv;
-    Context ct;
+    private TextView handCards;
+    private TextView row1;
+    private TextView row2;
+    private TextView row3;
+    private TextView row4;
+    private Button playBtn;
+    private Button selectBtn;
+    private RecyclerView rv;
+    private RecyclerViewAdapter adapter;
+    private int rowSelected;
+    private boolean rowSelection;
+    private Context ct;
+    private String msg;
 
 
-    ViewManager(TextView hands, TextView one, TextView two, TextView three, TextView four, EditText editText, Button playBtn, Button selectBtn4,
+    ViewManager(TextView hands, TextView one, TextView two, TextView three, TextView four, Button playBtn, Button selectBtn,
     RecyclerView rv, Context c){
         this.handCards = hands;
         this.row1 = one;
         this.row2 = two;
         this.row3 = three;
         this.row4 = four;
-        this.cardPlayed = editText;
         this.playBtn = playBtn;
         this.rv = rv;
         ct = c;
         this.selectBtn = selectBtn;
         this.selectBtn.setVisibility(View.GONE);
+        rowSelection = false;
+        rowSelected = -1;
+        row1.setOnClickListener(new RowListener(0));
+        row2.setOnClickListener(new RowListener(1));
+        row3.setOnClickListener(new RowListener(2));
+        row4.setOnClickListener(new RowListener(3));
+    }
+
+    public class RowListener implements View.OnClickListener {
+        private int id;
+        RowListener(int id){
+            this.id = id;
+        }
+        @Override
+        public void onClick(View v) {
+            if(rowSelection){
+                rowSelected = id;
+                handCards.setText('\n' + msg + "Row Selected: ROW " + Integer.toString(id+1) + "\n");
+            }
+        }
     }
 
 
     public int getCardPlayed(){
-        try{
-            return Integer.parseInt(cardPlayed.getText().toString());
-        }catch(NumberFormatException nfe){
-            return -1;
-        }
-
+        return adapter.getCardPlayed();
     }
 
 
@@ -58,39 +76,47 @@ public class ViewManager {
     }
 
     public void displayPlayerHands(String playerName, ArrayList<String> playersHand){
-        handCards.setText(playerName + "'s turn");
-        RecyclerViewAdapter adapter =  new RecyclerViewAdapter(ct, playersHand);
-        rv.setAdapter(adapter);
+        this.handCards.setText(playerName + "'s turn\n");
+        ArrayList<String> cardNo = new ArrayList<>();
+        for(int i = 1; i <= playersHand.size(); i++){
+            cardNo.add("Card " + Integer.toString(i));
+        }
+        this.adapter =  new RecyclerViewAdapter(ct, cardNo, playersHand, handCards);
+        this.rv.setAdapter(adapter);
     }
 
     public boolean checkCard(int size){
-        int cardPlay = this.getCardPlayed();
-
-        if(cardPlay > size || cardPlay < 1){
-            return false;
-        }else{
-            return true;
-        }
-
+        return true;
     }
 
-    public void selectRowDialog(String displayMessage) {
-        handCards.setText(displayMessage);
+    public void selectRowDialog(String playerName, String displayMessage) {
+        msg = displayMessage;
+        rv.setVisibility(View.GONE);
+        handCards.setText(displayMessage + "\nPlayer\'" + playerName + "\'please select a row!\n");
         playBtn.setVisibility(View.GONE);
         selectBtn.setVisibility(View.VISIBLE);
+        this.rowSelection = true;
     }
 
     public void endRowDialog() {
         playBtn.setVisibility(View.VISIBLE);
         selectBtn.setVisibility(View.GONE);
-    }
-
-    public void nextTurn(){
-        cardPlayed.setText("");
+        rv.setVisibility(View.VISIBLE);
+        this.rowSelection = false;
     }
 
     public void endRound(){
         handCards.setText("Now to disseminate the cards to the rows");
+    }
+
+    public int getRowSelected(){
+        int row = this.rowSelected;
+        this.rowSelected = -1;
+        return row;
+    }
+
+    public void printToast(String message){
+        Toast.makeText(ct, message, Toast.LENGTH_SHORT).show();
     }
 
 }

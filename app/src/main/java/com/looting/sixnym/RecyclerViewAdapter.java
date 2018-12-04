@@ -7,12 +7,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.textclassifier.TextClassification;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -21,14 +21,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
     private static final String TAG = "RecycleViewAdapter";
-
+    private int cardPlayed;
     private ArrayList<String> mNames = new ArrayList<>();
-    private ArrayList<String> mImg = new ArrayList<>();
+    private ArrayList<String> mValues = new ArrayList<>();
+    TextView tv;
     private Context mContext;
 
-    public RecyclerViewAdapter(Context context, ArrayList<String> names){
+    public RecyclerViewAdapter(Context context, ArrayList<String> names, ArrayList<String> values, TextView tv){
         mNames = names;
+        mValues = values;
+        this.tv = tv;
         mContext = context;
+        cardPlayed = -1;
     }
     @NonNull
     @Override
@@ -45,32 +49,45 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
             Glide.with(mContext)
                     .asBitmap()
-                    .load(R.drawable.ic_launcher_background)
+                    .load(R.drawable.back)
                     .into(viewHolder.img);
+            viewHolder.cv.setText(mValues.get(i));
             viewHolder.tv.setText(mNames.get(i));
 
             viewHolder.img.setOnClickListener(new View.OnClickListener(){
                @Override
                 public void onClick(View view){
                    Log.d(TAG, "onClick: clicked on an image: " + mNames.get(i));
-                   Toast.makeText(mContext, mNames.get(i), Toast.LENGTH_SHORT).show();
+                   String name = tv.getText().toString();
+                   String[] info = name.split("turn");
+                   cardPlayed = i+1;
+                   tv.setText(info[0] + "turn \nSelected Card " + Integer.toString(i+1) + ": " + mValues.get(i) + "\n");
+                   Toast.makeText(mContext, mNames.get(i) + mValues.get(i), Toast.LENGTH_SHORT).show();
                }
             });
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mNames.size();
+    }
+
+    public int getCardPlayed() {
+        int card = cardPlayed;
+        cardPlayed = -1;
+        return card;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         CircleImageView img;
+        TextView cv;
         TextView tv;
 
         public ViewHolder(View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.image);
+            cv = itemView.findViewById(R.id.cardValue);
             tv = itemView.findViewById(R.id.pointText);
         }
     }

@@ -34,12 +34,13 @@ public class Player {
         String playerCards = "";
         ArrayList<String> cards = new ArrayList<>();
         playerCards += "Please select a card to play: " + '\n';
-        for(int i = 0; i < hand.size(); i++)
+        for(Card c: hand)
         {
             playerCards = "";
-            Card card = hand.get(i);
-            playerCards += "Card " + Integer.toString(i + 1) + " - ";
-            playerCards += card.displayCard();
+            String face =  Integer.toString(c.getFaceValue());
+            String point = Integer.toString((c.getPointValue()));
+            playerCards += "FV: " + face;
+            playerCards += " PV: " + point;
             cards.add(playerCards);
 
         }
