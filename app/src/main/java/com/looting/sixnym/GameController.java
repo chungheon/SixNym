@@ -102,7 +102,7 @@ public class GameController {
     }
 
     private void displayPlayerHands(int playerTurn){
-        vm.displayPlayerHands(pArray.get(playerTurn).getName(), pArray.get(playerTurn).getPlayerCards());
+        vm.displayPlayerHands(pArray.get(playerTurn).getName(), pArray.get(playerTurn).getPlayerCards(), pArray.get(playerTurn).getTotalPoints());
     }
 
     private void updateRows(){

@@ -42,13 +42,14 @@ public class SinglePlayer extends Activity {
         TextView row2 = (TextView) findViewById(R.id.secondRow);
         TextView row3 = (TextView) findViewById(R.id.thirdRow);
         TextView row4 = (TextView) findViewById(R.id.fourthRow);
+        TextView points = (TextView) findViewById(R.id.points);
         Button playBtn = (Button) findViewById(R.id.playCard);
         Button selectBtn = (Button) findViewById(R.id.selectButton);
         RecyclerView rv = findViewById(R.id.cardDisplay);
         LinearLayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rv.setLayoutManager(lm);
 
-        ViewManager vm = new ViewManager(hands, row1, row2, row3, row4, playBtn, selectBtn, rv, this);
+        ViewManager vm = new ViewManager(hands, row1, row2, row3, row4, points, playBtn, selectBtn, rv, this);
         gameController = new GameController(tb, vm, players);
         gameController.startGame();
     }

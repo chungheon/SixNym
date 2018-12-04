@@ -52,7 +52,7 @@ public class CardRow {
             count++;
         }
 
-        card += "TP: " + Integer.toString(points) + '\n';
+        card += "Total Points: " + points + '\n';
         return card;
     }
 

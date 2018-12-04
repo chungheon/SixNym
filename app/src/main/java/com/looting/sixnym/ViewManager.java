@@ -18,6 +18,7 @@ public class ViewManager {
     private TextView row2;
     private TextView row3;
     private TextView row4;
+    private TextView points;
     private Button playBtn;
     private Button selectBtn;
     private RecyclerView rv;
@@ -28,13 +29,14 @@ public class ViewManager {
     private String msg;
 
 
-    ViewManager(TextView hands, TextView one, TextView two, TextView three, TextView four, Button playBtn, Button selectBtn,
+    ViewManager(TextView hands, TextView one, TextView two, TextView three, TextView four, TextView points, Button playBtn, Button selectBtn,
     RecyclerView rv, Context c){
         this.handCards = hands;
         this.row1 = one;
         this.row2 = two;
         this.row3 = three;
         this.row4 = four;
+        this.points = points;
         this.playBtn = playBtn;
         this.rv = rv;
         ct = c;
@@ -75,7 +77,7 @@ public class ViewManager {
         row4.setText("Row 4: " + cardRows.get(3).displayRow());
     }
 
-    public void displayPlayerHands(String playerName, ArrayList<String> playersHand){
+    public void displayPlayerHands(String playerName, ArrayList<String> playersHand, String points){
         this.handCards.setText(playerName + "'s turn\n");
         ArrayList<String> cardNo = new ArrayList<>();
         for(int i = 1; i <= playersHand.size(); i++){
@@ -83,6 +85,7 @@ public class ViewManager {
         }
         this.adapter =  new RecyclerViewAdapter(ct, cardNo, playersHand, handCards);
         this.rv.setAdapter(adapter);
+        this.points.setText(points);
     }
 
     public boolean checkCard(int size){
@@ -90,9 +93,9 @@ public class ViewManager {
     }
 
     public void selectRowDialog(String playerName, String displayMessage) {
-        msg = displayMessage;
+        msg = displayMessage + "\nPlayer \'" + playerName + "\'\nPlease select a row!\n";
         rv.setVisibility(View.GONE);
-        handCards.setText(displayMessage + "\nPlayer\'" + playerName + "\'please select a row!\n");
+        handCards.setText(msg);
         playBtn.setVisibility(View.GONE);
         selectBtn.setVisibility(View.VISIBLE);
         this.rowSelection = true;
@@ -126,6 +129,7 @@ public class ViewManager {
         this.row2.setVisibility(View.GONE);
         this.row3.setVisibility(View.GONE);
         this.row4.setVisibility(View.GONE);
+        this.points.setVisibility(View.GONE);
         String finalMessage = "End of game! Calculating SCORE...\n\n";
         for(String s: playerScores){
             finalMessage += s + "\n\n";
@@ -141,6 +145,7 @@ public class ViewManager {
         this.row2.setVisibility(View.VISIBLE);
         this.row3.setVisibility(View.VISIBLE);
         this.row4.setVisibility(View.VISIBLE);
+        this.points.setVisibility(View.VISIBLE);
     }
 
 }

@@ -44,7 +44,6 @@ public class Player {
             playerCards += "FV: " + face;
             playerCards += " PV: " + point;
             cards.add(playerCards);
-
         }
 
         return cards;
@@ -52,12 +51,15 @@ public class Player {
 
     public String getTotalPoints(){
         String pointsCards = "";
+        int total = 0;
         int count = 1;
         for(Card c: this.points){
             pointsCards += "Card " + Integer.toString(count);
             pointsCards += "- " + c.displayCard() + '\n';
+            total += c.getPointValue();
             count++;
         }
+        pointsCards += "Total Points: " + total;
         return pointsCards;
     }
 
