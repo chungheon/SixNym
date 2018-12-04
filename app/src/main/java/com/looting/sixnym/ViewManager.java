@@ -119,4 +119,28 @@ public class ViewManager {
         Toast.makeText(ct, message, Toast.LENGTH_SHORT).show();
     }
 
+    public void endGame(ArrayList<String> playerScores){
+        this.rv.setVisibility(View.GONE);
+        this.selectBtn.setVisibility(View.GONE);
+        this.row1.setVisibility(View.GONE);
+        this.row2.setVisibility(View.GONE);
+        this.row3.setVisibility(View.GONE);
+        this.row4.setVisibility(View.GONE);
+        String finalMessage = "End of game! Calculating SCORE...\n\n";
+        for(String s: playerScores){
+            finalMessage += s + "\n\n";
+        }
+        playBtn.setText("Play new game");
+        this.handCards.setText(finalMessage);
+    }
+
+    public void startGame(){
+        this.rv.setVisibility(View.VISIBLE);
+        playBtn.setText("Play Card");
+        this.row1.setVisibility(View.VISIBLE);
+        this.row2.setVisibility(View.VISIBLE);
+        this.row3.setVisibility(View.VISIBLE);
+        this.row4.setVisibility(View.VISIBLE);
+    }
+
 }

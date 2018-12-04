@@ -24,6 +24,8 @@ public class Player {
 
     public Card playCard(int index) { return hand.remove(index); }
 
+    public Card returnCard() { return points.remove(0); }
+
     public void getCard(Card c) { hand.add(c); }
 
     public void addPoints(Card cardG){ points.add(cardG); }
@@ -48,6 +50,24 @@ public class Player {
         return cards;
     }
 
+    public String getTotalPoints(){
+        String pointsCards = "";
+        int count = 1;
+        for(Card c: this.points){
+            pointsCards += "Card " + Integer.toString(count);
+            pointsCards += "- " + c.displayCard() + '\n';
+            count++;
+        }
+        return pointsCards;
+    }
+
     public int handSize(){ return hand.size(); }
+
+    public boolean isPointEmpty(){
+        if(points.size() == 0){
+            return true;
+        }
+        return false;
+    }
 
 }

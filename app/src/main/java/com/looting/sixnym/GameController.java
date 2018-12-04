@@ -64,40 +64,41 @@ public class GameController {
 
     public void playCard(){
         int player = turn%pArray.size();
-        if(turn == (pArray.size() * 10) - 1) {
-            //End game
-        }else{
-            if(vm.checkCard(pArray.get(player).handSize())){
-                int cardPlay = vm.getCardPlayed();
-                if(cardPlay != -1){
-                    cardPlay -= 1;
-                    Card c = this.pArray.get(player).playCard(cardPlay);
-                    CardPlayed cp = new CardPlayed(c, player);
-                    this.cardsPlayed.add(cp);
-                    turn++;
-                    player = turn%pArray.size();
-                    if(player == 0){
-                        Collections.sort(cardsPlayed);
-                        if(closestRow(cardsPlayed.get(0).card) == -1){
-                            String message = "";
-                            for(CardPlayed cardP: this.cardsPlayed){
-                                message += pArray.get(cardP.playerIndex).getName() + " played " + cardP.card.displayCard() + '\n';
-                            }
-                            vm.selectRowDialog(pArray.get(cardsPlayed.get(0).playerIndex).getName(), message);
-                        }else{
-                            playCards();
-                            updateRows();
-                            displayPlayerHands(0);
+        if(vm.checkCard(pArray.get(player).handSize())) {
+            int cardPlay = vm.getCardPlayed();
+            if (cardPlay != -1) {
+                cardPlay -= 1;
+                Card c = this.pArray.get(player).playCard(cardPlay);
+                CardPlayed cp = new CardPlayed(c, player);
+                this.cardsPlayed.add(cp);
+                player = (turn + 1) % pArray.size();
+                if (player == 0) {
+                    Collections.sort(cardsPlayed);
+                    if (closestRow(cardsPlayed.get(0).card) == -1) {
+                        String message = "";
+                        for (CardPlayed cardP : this.cardsPlayed) {
+                            message += pArray.get(cardP.playerIndex).getName() + " played " + cardP.card.displayCard() + '\n';
                         }
-                    }else{
-                        displayPlayerHands(player);
+                        vm.selectRowDialog(pArray.get(cardsPlayed.get(0).playerIndex).getName(), message);
+                    } else {
+                        playCards();
+                        updateRows();
+                        displayPlayerHands(0);
+                        if (this.turn == (pArray.size() * 10) - 1) {
+                            this.turn++;
+                            gameEnd();
+                        } else {
+                            this.turn++;
+                        }
                     }
-                }else{
-                    vm.printToast("Please Select a CARD!");
+                } else {
+                    displayPlayerHands(player);
+                    this.turn++;
                 }
+            } else {
+                vm.printToast("Please Select a CARD!");
             }
         }
-
     }
 
     private void displayPlayerHands(int playerTurn){
@@ -156,11 +157,49 @@ public class GameController {
             this.cardsPlayed.remove(0);
             vm.endRowDialog();
 
-            playCards();
-            updateRows();
-            displayPlayerHands(0);
+            if(this.turn == (pArray.size() * 10) - 1) {
+                this.turn++;
+                playCards();
+                gameEnd();
+            }else{
+                this.turn++;
+                playCards();
+                updateRows();
+                displayPlayerHands(0);
+            }
         }else{
             vm.printToast("Please Select a ROW!");
+        }
+    }
+
+    public void gameEnd(){
+        ArrayList<String> playerScores = new ArrayList<>();
+        for(int i = 0; i < pArray.size(); i++){
+            String s = pArray.get(i).getName() + " - ";
+            s += pArray.get(i).getTotalPoints();
+            playerScores.add(s);
+        }
+        for(Player p: pArray){
+            while(!p.isPointEmpty()){
+                tb.returnCard(p.returnCard());
+            }
+        }
+        tb.getFromAllRows();
+        vm.endGame(playerScores);
+        tb.shuffleDeck();
+    }
+
+    public void startNewGame(){
+        vm.startGame();
+        Collections.shuffle(pArray);
+        startGame();
+    }
+
+    public boolean getTurn(){
+        if(turn == (pArray.size() * 10)){
+            return false;
+        }else{
+            return true;
         }
     }
 }

@@ -7,6 +7,7 @@
 //Author: Loo Ting Xian
 package com.looting.sixnym;
 
+import android.util.Log;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -122,6 +123,7 @@ public class TableCards {
     }
 
     public void shuffleDeck(){
+        Log.d("DECKSIZE", Integer.toString(deck.getSize()));
         deck.shuffleDeck();
     }
 
@@ -163,5 +165,17 @@ public class TableCards {
 
     public CardRow getCardRow(int idx) {
         return cardRows.get(idx);
+    }
+
+    public void returnCard(Card c){
+        deck.addCard(c);
+    }
+
+    public void getFromAllRows(){
+        for(CardRow cr: cardRows){
+            while(!cr.isEmpty()){
+                deck.addCard(cr.removeFromRow());
+            }
+        }
     }
 }

@@ -54,7 +54,11 @@ public class SinglePlayer extends Activity {
     }
 
     public void playCard(View view){
-        gameController.playCard();
+        if(gameController.getTurn()){
+            gameController.playCard();
+        }else{
+            gameController.startNewGame();
+        }
     }
 
     public void selectRow(View view) {

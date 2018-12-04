@@ -58,4 +58,11 @@ public class CardRow {
 
     public int getSize() { return cardArray.size(); }
 
+    public boolean isEmpty() {
+        if(cardArray.size() == 0){
+            return true;
+        }
+        return false;
+    }
+
 }
