@@ -70,7 +70,7 @@ public class GameController {
         if(turn == (pArray.size() * 10) - 1) {
             //End game
         }else{
-            if(vm.checkCard(pArray.get(player).handSize())){
+            if(vm.checkCard(pArray.get(player).handSize()+1)){
                 turn++;
                 player = turn%pArray.size();
                 if(player == 0){
@@ -113,7 +113,16 @@ public class GameController {
         int cntRow = closestRow(cardToBePlaced);
 
         if (cntRow != -1) {
-            this.tb.getCardRows().get(cntRow).addToRow(cardToBePlaced);
+            CardRow selectedRow = this.tb.getCardRow(cntRow);
+            int cardRowSize = selectedRow.getSize();
+            if (cardRowSize == 5) {
+                for (int i = 0; i < cardRowSize;i++ ) {
+                    pArray.get(cardsPlayed.get(0).playerIndex).addPoints(selectedRow.removeFromRow());
+                }
+                selectedRow.addToRow(cardToBePlaced);
+            } else {
+                this.tb.getCardRows().get(cntRow).addToRow(cardToBePlaced);
+            }
         }
     }
 
