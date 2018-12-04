@@ -1,68 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingTop="@dimen/activity_horizontal_margin"
-    android:paddingBottom="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/handCards"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:text="Cards will be displayed here."
-    />
+        android:orientation="vertical"
+        tools:context=".SinglePlayer">
 
-    <TextView
-        android:id="@+id/firstRow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:text="Cards in the first row will be displayed here"/>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#f2f2f2">
 
-    <TextView
-        android:id="@+id/secondRow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:text="Cards in the second row will be displayed here"/>
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/cardDisplay"
+                android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/thirdRow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:text="Cards in the third row will be displayed here"/>
+            </android.support.v7.widget.RecyclerView>
+        </android.support.constraint.ConstraintLayout>
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/fourthRow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:text="Cards in the fourth row will be displayed here"/>
+                    <TextView
+                        android:id="@+id/firstRow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cards in the first row will be displayed here" />
 
-    <EditText
-        android:id="@+id/cardPlayed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/secondRow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cards in the second row will be displayed here" />
 
-    <Button
-        android:id="@+id/selectButton"
-        android:layout_width="102dp"
-        android:layout_height="wrap_content"
-        android:onClick="selectRow"
-        android:text="Select Row" />
+                    <TextView
+                        android:id="@+id/thirdRow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cards in the third row will be displayed here" />
 
-    <Button
-        android:id="@+id/playCard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="playCard"
-        android:text="Play Card"/>
+                    <TextView
+                        android:id="@+id/fourthRow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cards in the fourth row will be displayed here" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/handCards"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:text="GamePlay message will be displayed here." />
 
+                    <Button
+                        android:id="@+id/selectButton"
+                        android:layout_width="102dp"
+                        android:layout_height="wrap_content"
+                        android:onClick="selectRow"
+                        android:text="Select Row" />
+
+                    <Button
+                        android:id="@+id/playCard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="playCard"
+                        android:text="Play Card" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
 </LinearLayout>

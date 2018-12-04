@@ -41,15 +41,18 @@ public class CardRow {
     }
 
     public String displayRow(){
-        String card = "";
         int count = 1;
+        int points = getPoints();
+        String card = "";
+
         for(Card c: cardArray){
             card += "Card " + Integer.toString(count);
-            card += "Face Value: " + Integer.toString(c.getFaceValue());
-            card += " Point Value:" + Integer.toString(c.getPointValue());
+            card += "- " + c.displayCard();
             card += '\n';
             count++;
         }
+
+        card += "TP: " + Integer.toString(points) + '\n';
         return card;
     }
 

@@ -15,6 +15,7 @@
 package com.looting.sixnym;
 
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,33 +64,36 @@ public class GameController {
 
     public void playCard(){
         int player = turn%pArray.size();
-        Card c = pArray.get(player).playCard(vm.getCardPlayed()-1);
-        CardPlayed cp = new CardPlayed(c, player);
-        this.cardsPlayed.add(cp);
         if(turn == (pArray.size() * 10) - 1) {
             //End game
         }else{
             if(vm.checkCard(pArray.get(player).handSize())){
-                turn++;
-                player = turn%pArray.size();
-                if(player == 0){
-                    Collections.sort(cardsPlayed);
-                    if(closestRow(cardsPlayed.get(0).card) == -1){
-                        String message = "";
-                        for(CardPlayed cardP: this.cardsPlayed){
-                            message += pArray.get(cardP.playerIndex).getName() + " played " + cardP.card.displayCard() + '\n';
+                int cardPlay = vm.getCardPlayed();
+                if(cardPlay != -1){
+                    cardPlay -= 1;
+                    Card c = this.pArray.get(player).playCard(cardPlay);
+                    CardPlayed cp = new CardPlayed(c, player);
+                    this.cardsPlayed.add(cp);
+                    turn++;
+                    player = turn%pArray.size();
+                    if(player == 0){
+                        Collections.sort(cardsPlayed);
+                        if(closestRow(cardsPlayed.get(0).card) == -1){
+                            String message = "";
+                            for(CardPlayed cardP: this.cardsPlayed){
+                                message += pArray.get(cardP.playerIndex).getName() + " played " + cardP.card.displayCard() + '\n';
+                            }
+                            vm.selectRowDialog(pArray.get(cardsPlayed.get(0).playerIndex).getName(), message);
+                        }else{
+                            playCards();
+                            updateRows();
+                            displayPlayerHands(0);
                         }
-                        vm.selectRowDialog(message);
-                        vm.nextTurn();
                     }else{
-                        playCards();
-                        updateRows();
-                        displayPlayerHands(0);
-                        vm.nextTurn();
+                        displayPlayerHands(player);
                     }
                 }else{
-                    displayPlayerHands(player);
-                    vm.nextTurn();
+                    vm.printToast("Please Select a CARD!");
                 }
             }
         }
@@ -97,7 +101,7 @@ public class GameController {
     }
 
     private void displayPlayerHands(int playerTurn){
-        vm.displayPlayerHands(pArray.get(playerTurn).getName() + '\n', pArray.get(playerTurn).getPlayerCards());
+        vm.displayPlayerHands(pArray.get(playerTurn).getName(), pArray.get(playerTurn).getPlayerCards());
     }
 
     private void updateRows(){
@@ -141,19 +145,22 @@ public class GameController {
     }
 
     public void selectRow(){
-        int rowSelected = vm.getCardPlayed()-1;
-        int cardRowSize = tb.getCardRow(rowSelected).getSize();
-        CardRow cardRow = tb.getCardRow(rowSelected);
-        for (int i = 0; i < cardRowSize;i++ ) {
-            pArray.get(cardsPlayed.get(0).playerIndex).addPoints(cardRow.removeFromRow());
-        }
-        this.tb.getCardRows().get(rowSelected).addToRow(cardsPlayed.get(0).card);
-        this.cardsPlayed.remove(0);
-        vm.endRowDialog();
+        int rowSelected = vm.getRowSelected();
+        if(rowSelected != -1){
+            int cardRowSize = tb.getCardRow(rowSelected).getSize();
+            CardRow cardRow = tb.getCardRow(rowSelected);
+            for (int i = 0; i < cardRowSize;i++ ) {
+                pArray.get(cardsPlayed.get(0).playerIndex).addPoints(cardRow.removeFromRow());
+            }
+            this.tb.getCardRows().get(rowSelected).addToRow(cardsPlayed.get(0).card);
+            this.cardsPlayed.remove(0);
+            vm.endRowDialog();
 
-        playCards();
-        updateRows();
-        displayPlayerHands(0);
-        vm.nextTurn();
+            playCards();
+            updateRows();
+            displayPlayerHands(0);
+        }else{
+            vm.printToast("Please Select a ROW!");
+        }
     }
 }

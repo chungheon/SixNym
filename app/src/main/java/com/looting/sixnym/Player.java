@@ -30,19 +30,22 @@ public class Player {
 
     public Card displayCard(int index) { return hand.get(index); }
 
-    public String getPlayerCards(){
+    public ArrayList<String> getPlayerCards(){
         String playerCards = "";
+        ArrayList<String> cards = new ArrayList<>();
         playerCards += "Please select a card to play: " + '\n';
-        for(int i = 0; i < hand.size(); i++)
+        for(Card c: hand)
         {
-            Card card = hand.get(i);
-            playerCards += "Card " + Integer.toString(i + 1) + " - face value: ";
-            playerCards += Integer.toString(card.getFaceValue());
-            playerCards += " Point value: " + Integer.toString(card.getPointValue());
-            playerCards += '\n';
+            playerCards = "";
+            String face =  Integer.toString(c.getFaceValue());
+            String point = Integer.toString((c.getPointValue()));
+            playerCards += "FV: " + face;
+            playerCards += " PV: " + point;
+            cards.add(playerCards);
+
         }
 
-        return playerCards;
+        return cards;
     }
 
     public int handSize(){ return hand.size(); }
