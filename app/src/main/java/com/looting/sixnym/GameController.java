@@ -44,6 +44,7 @@ public class GameController {
     private ArrayList<CardPlayed> cardsPlayed;
     private int turn;
 
+
     public GameController(TableCards tb, ViewManager vm, ArrayList<Player> pArray){
         this.tb = tb;
         this.vm = vm;
@@ -117,7 +118,16 @@ public class GameController {
         int cntRow = closestRow(cardToBePlaced);
 
         if (cntRow != -1) {
-            this.tb.getCardRows().get(cntRow).addToRow(cardToBePlaced);
+            CardRow selectedRow = this.tb.getCardRow(cntRow);
+            int cardRowSize = selectedRow.getSize();
+            if (cardRowSize == 5) {
+                for (int i = 0; i < cardRowSize;i++ ) {
+                    pArray.get(cardsPlayed.get(0).playerIndex).addPoints(selectedRow.removeFromRow());
+                }
+                selectedRow.addToRow(cardToBePlaced);
+            } else {
+                this.tb.getCardRows().get(cntRow).addToRow(cardToBePlaced);
+            }
         }
     }
 
