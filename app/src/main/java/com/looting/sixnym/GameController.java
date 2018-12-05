@@ -58,6 +58,7 @@ public class GameController {
         dealCards();
         updateRows();
         turn = 0;
+        sortHands();
         displayPlayerHands((turn % (pArray.size())));
     }
 
@@ -70,35 +71,48 @@ public class GameController {
             if (cardPlay != -1) {
                 cardPlay -= 1;
                 Card c = this.pArray.get(player).playCard(cardPlay);
-                CardPlayed cp = new CardPlayed(c, player);
-                this.cardsPlayed.add(cp);
-                player = (turn + 1) % pArray.size();
-                if (player == 0) {
-                    Collections.sort(cardsPlayed);
-                    if (closestRow(cardsPlayed.get(0).card) == -1) {
-                        String message = "";
-                        for (CardPlayed cardP : this.cardsPlayed) {
-                            message += pArray.get(cardP.playerIndex).getName() + " played " + cardP.card.displayCard() + '\n';
-                        }
-                        vm.selectRowDialog(pArray.get(cardsPlayed.get(0).playerIndex).getName(), message);
-                    } else {
-                        playCards();
-                        updateRows();
-                        displayPlayerHands(0);
-                        if (this.turn == (pArray.size() * 10) - 1) {
-                            this.turn++;
-                            gameEnd();
-                        } else {
-                            this.turn++;
-                        }
-                    }
-                } else {
-                    displayPlayerHands(player);
-                    this.turn++;
-                }
+                playCard(c, player);
             } else {
                 vm.printToast("Please Select a CARD!");
             }
+        }
+    }
+
+    private void playCard(Card c, int player){
+        CardPlayed cp = new CardPlayed(c, player);
+        this.cardsPlayed.add(cp);
+        player = (turn + 1) % pArray.size();
+        if (player == 0) {
+            Collections.sort(cardsPlayed);
+            if (closestRow(cardsPlayed.get(0).card) == -1) {
+                String message = "";
+                for (CardPlayed cardP : this.cardsPlayed) {
+                    message += pArray.get(cardP.playerIndex).getName() + " played " + cardP.card.displayCard() + '\n';
+                }
+                vm.selectRowDialog(pArray.get(cardsPlayed.get(0).playerIndex).getName(), message);
+            } else {
+                gamePlay();
+            }
+        } else {
+            displayPlayerHands(player);
+            this.turn++;
+        }
+    }
+
+    private void cardToRows(){
+        playCards();
+        updateRows();
+    }
+
+    private void gamePlay(){
+        if (this.turn == (pArray.size() * 10) - 1) {
+            this.turn++;
+            cardToRows();
+            gameEnd();
+        } else {
+            cardToRows();
+            displayPlayerHands(0);
+            this.turn++;
         }
     }
 
@@ -128,6 +142,12 @@ public class GameController {
             } else {
                 this.tb.getCardRows().get(cntRow).addToRow(cardToBePlaced);
             }
+        }
+    }
+
+    private void sortHands(){
+        for(Player p: pArray){
+            p.sortHand();
         }
     }
 
@@ -166,17 +186,7 @@ public class GameController {
             this.tb.getCardRows().get(rowSelected).addToRow(cardsPlayed.get(0).card);
             this.cardsPlayed.remove(0);
             vm.endRowDialog();
-
-            if(this.turn == (pArray.size() * 10) - 1) {
-                this.turn++;
-                playCards();
-                gameEnd();
-            }else{
-                this.turn++;
-                playCards();
-                updateRows();
-                displayPlayerHands(0);
-            }
+            gamePlay();
         }else{
             vm.printToast("Please Select a ROW!");
         }

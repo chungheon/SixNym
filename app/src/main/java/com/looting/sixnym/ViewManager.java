@@ -71,10 +71,10 @@ public class ViewManager {
 
 
     public void displayRows(ArrayList<CardRow> cardRows){
-        row1.setText("Row 1: " + cardRows.get(0).displayRow());
-        row2.setText("Row 2: " + cardRows.get(1).displayRow());
-        row3.setText("Row 3: " + cardRows.get(2).displayRow());
-        row4.setText("Row 4: " + cardRows.get(3).displayRow());
+        row1.setText(cardRows.get(0).displayRow());
+        row2.setText(cardRows.get(1).displayRow());
+        row3.setText(cardRows.get(2).displayRow());
+        row4.setText(cardRows.get(3).displayRow());
     }
 
     public void displayPlayerHands(String playerName, ArrayList<String> playersHand, String points){

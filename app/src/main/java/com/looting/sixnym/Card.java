@@ -7,6 +7,8 @@
 //Author: Loo Ting Xian
 package com.looting.sixnym;
 
+import java.util.Comparator;
+
 public class Card {
 
     //The face value of the card, cards played would be compared using

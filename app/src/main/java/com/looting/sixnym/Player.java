@@ -7,6 +7,8 @@
 package com.looting.sixnym;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Player {
 
@@ -71,5 +73,22 @@ public class Player {
         }
         return false;
     }
+
+    public void sortHand(){
+
+        Comparator<Card> CardComparator = new Comparator<Card>() {
+            @Override
+            public int compare(Card o1, Card o2) {
+                return o1.getFaceValue() - o2.getFaceValue();
+            }
+        };
+
+        Collections.sort(hand, CardComparator);
+
+    }
+
+
+
+
 
 }
