@@ -61,7 +61,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                    String name = tv.getText().toString();
                    String[] info = name.split("turn");
                    cardPlayed = i+1;
-                   tv.setText(info[0] + "turn \nSelected Card " + Integer.toString(i+1) + ": " + mValues.get(i) + "\n");
+                   tv.setText(info[0] + "turn \nSelected Card " + Integer.toString(i+1) + ":\n" + mValues.get(i) + "\n");
                }
             });
     }

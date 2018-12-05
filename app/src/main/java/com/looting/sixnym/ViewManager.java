@@ -5,19 +5,21 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ViewManager {
     private TextView handCards;
-    private TextView row1;
-    private TextView row2;
-    private TextView row3;
-    private TextView row4;
+    private ExpandableListView rows;
+    private ExpandableListAdapter listAdapter;
     private TextView points;
     private Button playBtn;
     private Button selectBtn;
@@ -27,15 +29,14 @@ public class ViewManager {
     private boolean rowSelection;
     private Context ct;
     private String msg;
+    private List<String> listDataHeader;
+    private HashMap<String, List<String>> listDataChild;
 
 
-    ViewManager(TextView hands, TextView one, TextView two, TextView three, TextView four, TextView points, Button playBtn, Button selectBtn,
-    RecyclerView rv, Context c){
+    ViewManager(TextView hands, final ExpandableListView rows, TextView points, Button playBtn, Button selectBtn,
+                RecyclerView rv, Context c){
         this.handCards = hands;
-        this.row1 = one;
-        this.row2 = two;
-        this.row3 = three;
-        this.row4 = four;
+        this.rows = rows;
         this.points = points;
         this.playBtn = playBtn;
         this.rv = rv;
@@ -44,24 +45,17 @@ public class ViewManager {
         this.selectBtn.setVisibility(View.GONE);
         rowSelection = false;
         rowSelected = -1;
-        row1.setOnClickListener(new RowListener(0));
-        row2.setOnClickListener(new RowListener(1));
-        row3.setOnClickListener(new RowListener(2));
-        row4.setOnClickListener(new RowListener(3));
-    }
 
-    public class RowListener implements View.OnClickListener {
-        private int id;
-        RowListener(int id){
-            this.id = id;
-        }
-        @Override
-        public void onClick(View v) {
-            if(rowSelection){
-                rowSelected = id;
-                handCards.setText('\n' + msg + "Row Selected: ROW " + Integer.toString(id+1) + "\n");
+        rows.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if(rowSelection) {
+                    rowSelected = groupPosition;
+                    handCards.setText('\n' + msg + "Row selected: ROW " + (rowSelected+1));
+                }
             }
-        }
+        });
     }
 
 
@@ -70,11 +64,31 @@ public class ViewManager {
     }
 
 
-    public void displayRows(ArrayList<CardRow> cardRows){
-        row1.setText(cardRows.get(0).displayRow());
-        row2.setText(cardRows.get(1).displayRow());
-        row3.setText(cardRows.get(2).displayRow());
-        row4.setText(cardRows.get(3).displayRow());
+    public void displayRows(ArrayList<CardRow> cardRows) {
+        prepareData(cardRows);
+
+        listAdapter = new ExpandableListAdapter(ct, listDataHeader, listDataChild);
+
+        rows.setAdapter(listAdapter);
+    }
+
+    private void prepareData(ArrayList<CardRow> cardRows){
+        this.listDataHeader = new ArrayList<>();
+        this.listDataChild = new HashMap<String, List<String>>();
+        int size = 0;
+        int count = 0;
+        for(CardRow cr: cardRows){
+            String data = cr.displayRow();
+            String[] info = data.split("\n");
+            String topCard = "FV: " + cr.getTopCard() + '\n' + info[info.length-1];
+            this.listDataHeader.add(topCard);
+            List<String> cards = new ArrayList<>();
+            for(int i = info.length-3; i >= 0; i--){
+                cards.add(info[i]);
+            }
+            listDataChild.put(listDataHeader.get(count), cards);
+            count++;
+        }
     }
 
     public void displayPlayerHands(String playerName, ArrayList<String> playersHand, String points){
@@ -125,10 +139,7 @@ public class ViewManager {
     public void endGame(ArrayList<String> playerScores){
         this.rv.setVisibility(View.GONE);
         this.selectBtn.setVisibility(View.GONE);
-        this.row1.setVisibility(View.GONE);
-        this.row2.setVisibility(View.GONE);
-        this.row3.setVisibility(View.GONE);
-        this.row4.setVisibility(View.GONE);
+        this.rows.setVisibility(View.GONE);
         this.points.setVisibility(View.GONE);
         String finalMessage = "End of game! Calculating SCORE...\n\n";
         for(String s: playerScores){
@@ -141,10 +152,7 @@ public class ViewManager {
     public void startGame(){
         this.rv.setVisibility(View.VISIBLE);
         playBtn.setText("Play Card");
-        this.row1.setVisibility(View.VISIBLE);
-        this.row2.setVisibility(View.VISIBLE);
-        this.row3.setVisibility(View.VISIBLE);
-        this.row4.setVisibility(View.VISIBLE);
+        this.rows.setVisibility(View.VISIBLE);
         this.points.setVisibility(View.VISIBLE);
     }
 

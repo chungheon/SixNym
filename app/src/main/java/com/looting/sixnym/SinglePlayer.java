@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,10 +39,7 @@ public class SinglePlayer extends Activity {
         players.add(p3);
         Collections.shuffle(players);
         TextView hands = (TextView) findViewById(R.id.handCards);
-        TextView row1 = (TextView) findViewById(R.id.firstRow);
-        TextView row2 = (TextView) findViewById(R.id.secondRow);
-        TextView row3 = (TextView) findViewById(R.id.thirdRow);
-        TextView row4 = (TextView) findViewById(R.id.fourthRow);
+        ExpandableListView rows = findViewById(R.id.rows);
         TextView points = (TextView) findViewById(R.id.points);
         Button playBtn = (Button) findViewById(R.id.playCard);
         Button selectBtn = (Button) findViewById(R.id.selectButton);
@@ -49,7 +47,7 @@ public class SinglePlayer extends Activity {
         LinearLayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rv.setLayoutManager(lm);
 
-        ViewManager vm = new ViewManager(hands, row1, row2, row3, row4, points, playBtn, selectBtn, rv, this);
+        ViewManager vm = new ViewManager(hands, rows, points, playBtn, selectBtn, rv, this);
         gameController = new GameController(tb, vm, players);
         gameController.startGame();
     }
