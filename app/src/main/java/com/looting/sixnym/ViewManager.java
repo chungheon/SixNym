@@ -45,12 +45,20 @@ public class ViewManager {
         this.selectBtn.setVisibility(View.GONE);
         rowSelection = false;
         rowSelected = -1;
-
         rows.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
 
             @Override
             public void onGroupExpand(int groupPosition) {
                 if(rowSelection) {
+                    rowSelected = groupPosition;
+                    handCards.setText('\n' + msg + "Row selected: ROW " + (rowSelected+1));
+                }
+            }
+        });
+        rows.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+                if(rowSelection){
                     rowSelected = groupPosition;
                     handCards.setText('\n' + msg + "Row selected: ROW " + (rowSelected+1));
                 }
