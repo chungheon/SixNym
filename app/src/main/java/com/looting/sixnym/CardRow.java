@@ -65,4 +65,12 @@ public class CardRow {
         return false;
     }
 
+    public String getRowCards(){
+        String total = "";
+        for(Card c: cardArray){
+            total += c.getFaceValue() + "a";
+        }
+        return total;
+    }
+
 }

@@ -82,6 +82,8 @@ public class MultiplayerConnect extends Activity {
     boolean accept = true;
     boolean search = true;
     ServerSocket serverSocket;
+    int[] cardPlay;
+    boolean finish = false;
 
     Handler handler = new Handler(new Handler.Callback(){
         @Override
@@ -90,6 +92,7 @@ public class MultiplayerConnect extends Activity {
                 case MESSAGE_READ:
                     byte[] readBuff = (byte[]) msg.obj;
                     String msgR = new String(readBuff, 0, msg.arg1);
+                    Log.d("MessageReceived", msgR);
                     if(clientUser){
                         clientHandle(msgR);
                     }else{
@@ -261,7 +264,24 @@ public class MultiplayerConnect extends Activity {
                     players.get(0).getCard(c);
                 }
                 vm.displayPlayerHands(playerNum, players.get(0).getPlayerCards(),info[info.length-1]);
-                sendReceive.write(("HandDone").getBytes());
+                sendReceive.write(("HandDone " + playerNum).getBytes());
+            }else if(info[0].equals("CardRow")){
+                ArrayList<CardRow> cardRows = new ArrayList<>();
+                for(int i = 0; i < 4; i++){
+                    String[] rowInfo = info[i+1].split("a");
+                     CardRow cardRow = new CardRow();
+                    for(int j = 0; j < rowInfo.length; j++){
+                        try{
+                            int fv = Integer.parseInt(rowInfo[j]);
+                            Card c = new Card(fv);
+                            cardRow.addToRow(c);
+                        }catch(NumberFormatException e){ }
+                    }
+                    cardRows.add(cardRow);
+                }
+                vm.displayRows(cardRows);
+            }else if(info[0].equals("Placed")){
+                hands.setText(info[1] + " has placed down card\n" + hands.getText().toString());
             }
         }
     }
@@ -270,13 +290,17 @@ public class MultiplayerConnect extends Activity {
         String[] info = msg.split(" ");
         if(info[0].equals("HandDone")){
             ArrayList<CardRow> cardRows = hostGame.getCardRows();
-            int count = 0;
+            String rowCards = "";
             for(CardRow cr: cardRows){
-                sendReceive.write(("CardRow " + Integer.toString(count) + cr.getTopCard()).getBytes());
-                count++;
+                rowCards += cr.getRowCards() + " ";
             }
+            sendReceives.get(Integer.parseInt(info[1])-1).write(("CardRow " + rowCards).getBytes());
         }else if(info[0].equals("GetCards")){
             sendReceive.write(("HandCards " + hostGame.getCards(Integer.parseInt(info[1])) + "0").getBytes());
+        }else if(info[0].equals("PlayCard")){
+            broadcastMsg("Placed " + info[1]);
+            hands.setText(info[1] + " has placed down card\n" + hands.getText().toString());
+            cardPlay[Integer.parseInt(info[1])] = Integer.parseInt(info[2]);
         }
     }
 
@@ -299,12 +323,23 @@ public class MultiplayerConnect extends Activity {
         this.points = (TextView) findViewById(R.id.points);
         this.playBtn = (Button) findViewById(R.id.playCard);
         this.selectBtn = (Button) findViewById(R.id.selectButton);
+        gameListeners();
         this.rv = findViewById(R.id.cardDisplay);
         LinearLayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         this.rv.setLayoutManager(lm);
         this.tb = new TableCards();
         hands.setText("Player " + playerNum);
         vm = new ViewManager(hands, rows, points,playBtn, selectBtn, rv,this);
+    }
+
+    public void gameListeners(){
+        playBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                sendReceive.write(("PlayCard " + playerNum + " " + vm.getCardPlayed()).getBytes());
+                playBtn.setVisibility(View.GONE);
+            }
+        });
     }
 
     public void startGame(){
@@ -318,6 +353,8 @@ public class MultiplayerConnect extends Activity {
         LinearLayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         this.rv.setLayoutManager(lm);
         this.tb = new TableCards();
+        cardPlay = new int[players.size()];
+        hostListener();
         playerNum = "0";
         players.add(new Player(playerNum));
         int count = 1;
@@ -330,12 +367,30 @@ public class MultiplayerConnect extends Activity {
         vm = new ViewManager(hands, rows, points, playBtn, selectBtn, rv, this);
         hostGame = new HostGameController(tb,vm, players);
         hostGame.dealCards();
+        vm.displayRows(hostGame.getCardRows());
         vm.displayPlayerHands(playerNum,hostGame.getPlayerCards(0),"0");
         count = 1;
         for(SendReceive sr: sendReceives){
             sr.write(("HandCards " + hostGame.getCards(count) + "0").getBytes());
             count++;
         }
+    }
+
+    public void hostListener(){
+        playBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!finish){
+                    broadcastMsg("Placed " + playerNum);
+                    hands.setText("0 has placed down card\n" + hands.getText().toString());
+                    cardPlay[0] = vm.getCardPlayed();
+                    finish = true;
+                }else{
+                    //Play cards
+                }
+
+            }
+        });
     }
 
     public void broadcastMsg(String msg){
