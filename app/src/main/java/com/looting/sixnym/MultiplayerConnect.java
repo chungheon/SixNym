@@ -33,9 +33,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -79,7 +83,6 @@ public class MultiplayerConnect extends Activity {
     ArrayList<SendReceive> sendReceives = new ArrayList<>();
     String playerNum;
     HostGameController hostGame;
-    boolean accept = true;
     boolean search = true;
     ServerSocket serverSocket;
 
@@ -89,7 +92,7 @@ public class MultiplayerConnect extends Activity {
             switch (msg.what){
                 case MESSAGE_READ:
                     byte[] readBuff = (byte[]) msg.obj;
-                    String msgR = new String(readBuff, 0, msg.arg1);
+                    GameInfo msgR = deserialize(readBuff);
                     if(clientUser){
                         clientHandle(msgR);
                     }else{
@@ -100,6 +103,32 @@ public class MultiplayerConnect extends Activity {
             return true;
         }
     });
+
+    public static byte[] serialize(GameInfo gameInfo) throws IOException {
+        try{
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ObjectOutputStream os = new ObjectOutputStream(out);
+            os.writeObject(gameInfo);
+            byte[] bytes = out.toByteArray();
+            os.close();
+            return bytes;
+        }catch(IOException e){ }
+        return null;
+    }
+    public static GameInfo deserialize(byte[] data){
+        try{
+            ByteArrayInputStream in = new ByteArrayInputStream(data);
+            ObjectInputStream is = new ObjectInputStream(in);
+            GameInfo gameInfo = (GameInfo) is.readObject();
+            is.close();
+            return gameInfo;
+        }catch(IOException e){
+            Log.e("IOException", "Unable to open stream", null);
+        }catch(ClassNotFoundException e){
+            Log.e("Class Not Found", "Unknown Class", null);
+        }
+        return null;
+    }
 
 
     @Override
@@ -169,6 +198,7 @@ public class MultiplayerConnect extends Activity {
         btnStartGame.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                search = false;
                 startGame();
             }
         });
@@ -195,6 +225,13 @@ public class MultiplayerConnect extends Activity {
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+        try{
+            serverSocket = new ServerSocket(8888);
+        }catch (IOException e){
+            Log.e("PortFail","Unable to open port 8888");
+            System.exit(0);
+        }
     }
 
     WifiP2pManager.PeerListListener peerListListener = new WifiP2pManager.PeerListListener() {
@@ -231,9 +268,6 @@ public class MultiplayerConnect extends Activity {
 
             if(info.groupFormed && info.isGroupOwner){
                 btnStartGame.setVisibility(View.VISIBLE);
-                try{
-                    serverSocket = new ServerSocket(8888);
-                }catch (IOException e){ }
                 connectionStatus.setText("Host");
                 host = new ServerClass();
                 host.run();
@@ -246,38 +280,13 @@ public class MultiplayerConnect extends Activity {
         }
     };
 
-    public void clientHandle(String msg){
-        String[] info = msg.split(" ");
-        if(clientUser){
-            if(info[0].equals("StartGame")){
-                playerNum = info[1];
-                Player p = new Player(playerNum);
-                players.add(p);
-                startClient();
-            }else if(info[0].equals("HandCards")){
-                String cards;
-                for(int i = 1; i < info.length - 1; i++){
-                    Card c = new Card(Integer.parseInt(info[i]));
-                    players.get(0).getCard(c);
-                }
-                vm.displayPlayerHands(playerNum, players.get(0).getPlayerCards(),info[info.length-1]);
-                sendReceive.write(("HandDone").getBytes());
-            }
+    public void clientHandle(GameInfo msg){
+        if(msg.msgProtocol.equals("StartGame")){
+            playerNum = msg.getMessage();
         }
     }
 
-    public void hostHandle(String msg){
-        String[] info = msg.split(" ");
-        if(info[0].equals("HandDone")){
-            ArrayList<CardRow> cardRows = hostGame.getCardRows();
-            int count = 0;
-            for(CardRow cr: cardRows){
-                sendReceive.write(("CardRow " + Integer.toString(count) + cr.getTopCard()).getBytes());
-                count++;
-            }
-        }else if(info[0].equals("GetCards")){
-            sendReceive.write(("HandCards " + hostGame.getCards(Integer.parseInt(info[1])) + "0").getBytes());
-        }
+    public void hostHandle(GameInfo msg){
     }
 
     @Override
@@ -332,15 +341,11 @@ public class MultiplayerConnect extends Activity {
         hostGame.dealCards();
         vm.displayPlayerHands(playerNum,hostGame.getPlayerCards(0),"0");
         count = 1;
-        for(SendReceive sr: sendReceives){
-            sr.write(("HandCards " + hostGame.getCards(count) + "0").getBytes());
-            count++;
-        }
     }
 
-    public void broadcastMsg(String msg){
+    public void broadcastMsg(GameInfo msg){
         for(SendReceive sr: sendReceives){
-            sr.write(msg.getBytes());
+            sr.write(msg);
         }
     }
 
@@ -354,7 +359,8 @@ public class MultiplayerConnect extends Activity {
                     sendReceive.start();
                     sendReceives.add(sendReceive);
                     Log.d("CONNECTED", "Player Connected", null);
-                    sendReceive.write(("StartGame " + sendReceives.size()).getBytes());
+                    GameInfo msg = new GameInfo("StartGame", sendReceives.size() + "");
+                    sendReceive.write(msg);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e("SocketConnection", "Connection failed");
@@ -387,14 +393,14 @@ public class MultiplayerConnect extends Activity {
 
     public class SendReceive extends Thread {
         private Socket socket;
-        private InputStream inputStream;
-        private OutputStream outputStream;
+        private ObjectInputStream inputStream;
+        private ObjectOutputStream outputStream;
 
         public SendReceive(Socket skt) {
             socket = skt;
             try {
-                inputStream = socket.getInputStream();
-                outputStream = socket.getOutputStream();
+                inputStream = new ObjectInputStream(socket.getInputStream());
+                outputStream = new ObjectOutputStream(socket.getOutputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -416,9 +422,9 @@ public class MultiplayerConnect extends Activity {
                 }
             }
         }
-        public void write(byte[] bytes){
+        public void write(GameInfo gameInfo){
             try {
-                outputStream.write(bytes);
+                outputStream.write(serialize(gameInfo));
             } catch (IOException e) {
                 e.printStackTrace();
             }
