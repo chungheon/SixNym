@@ -16,11 +16,9 @@ import java.util.Comparator;
 
 public class TableCards {
 
-    private Deck deck;
     private ArrayList<CardRow> cardRows;
 
     public TableCards() {
-        deck = new Deck();
         cardRows = new ArrayList<CardRow>();
         for(int i = 0; i < 4; i++){
             CardRow newRow = new CardRow();
@@ -69,62 +67,12 @@ public class TableCards {
         }
     }
 
-    public void dealCards(ArrayList<Player> pArray){
-        int count = 0;
-        for(int i = 0; i < (pArray.size() * 10); i++) {
-            if (i % pArray.size() == 0) {
-                pArray.get(0).getCard(deck.dealCard());
-            } else if (i % pArray.size() == 1) {
-                pArray.get(1).getCard(deck.dealCard());
-            } else if (i % pArray.size() == 2) {
-                pArray.get(2).getCard(deck.dealCard());
-            } else if (i % pArray.size() == 3) {
-                pArray.get(3).getCard(deck.dealCard());
-            } else if (i % pArray.size() == 4) {
-                pArray.get(4).getCard(deck.dealCard());
-            } else if (i % pArray.size() == 5) {
-                pArray.get(5).getCard(deck.dealCard());
-            } else if (i % pArray.size() == 6) {
-                pArray.get(6).getCard(deck.dealCard());
-            } else if (i % pArray.size() == 7) {
-                pArray.get(7).getCard(deck.dealCard());
-            } else if (i % pArray.size() == 8) {
-                pArray.get(8).getCard(deck.dealCard());
-            } else if (i % pArray.size() == 9) {
-                pArray.get(9).getCard(deck.dealCard());
-            }
-        }
-        cardRows.get(0).addToRow(deck.dealCard());
-        cardRows.get(1).addToRow(deck.dealCard());
-        cardRows.get(2).addToRow(deck.dealCard());
-        cardRows.get(3).addToRow(deck.dealCard());
+    public void addToRow(Card c, int row){
+        this.cardRows.get(row).addToRow(c);
     }
 
     public ArrayList<CardRow> getCardRows(){
         return cardRows;
-    }
-
-    public void fillDeck(int numPlayers){
-        for(int i = 1; i <= (numPlayers*10) + 4 ; i++){
-            Card card = new Card();
-            if(i == 55) {
-                card.setCard(55, 7);
-            }else if(i%11 == 0){
-                card.setCard(i, 5);
-            }else if(i%10 == 0){
-                card.setCard(i, 3);
-            }else if(i%5 ==0){
-                card.setCard(i, 2);
-            }else {
-                card.setCard(i,1);
-            }
-            deck.addCard(card);
-        }
-    }
-
-    public void shuffleDeck(){
-        Log.d("DECKSIZE", Integer.toString(deck.getSize()));
-        deck.shuffleDeck();
     }
 
     private int getHighest(){
@@ -167,15 +115,4 @@ public class TableCards {
         return cardRows.get(idx);
     }
 
-    public void returnCard(Card c){
-        deck.addCard(c);
-    }
-
-    public void getFromAllRows(){
-        for(CardRow cr: cardRows){
-            while(!cr.isEmpty()){
-                deck.addCard(cr.removeFromRow());
-            }
-        }
-    }
 }

@@ -1,18 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.looting.sixnym.MultiplayerConnect">
+    tools:context=".MainActivity"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
+    <!-- Created by Sarthi Technology-->
+    <!-- www.youtube.com/SarthiTechnology-->
+    <!-- www.facebook.com/SarthiTechnology-->
+
+    <!-- My Dear Friends, Thanks for your kind support for my youtube channel.-->
+
+    <!-- Please make sure that you are using Relative Layout for below codes-->
+
+
+    <Button
+        android:id="@+id/onOff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="55dp"
+        android:text="Wifi On" />
+
+    <Button
+        android:id="@+id/discover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/onOff"
+        android:layout_alignBottom="@+id/onOff"
+        android:layout_centerHorizontal="true"
+        android:text="Discover" />
+
+    <ListView
+        android:id="@+id/peerListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/connectionsList"
-        android:orientation="horizontal">
+        android:layout_height="200dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/onOff"
+        android:layout_marginTop="25dp"
+        android:background="@android:color/holo_orange_light" />
 
-    </android.support.v7.widget.RecyclerView>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/connectionStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="15dp"
+        android:text="Connection Status"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="18sp"
+        android:textStyle="italic" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/peerListView"
+        android:id="@+id/startGame"
+        android:text="Start Game"/>
+
+</RelativeLayout>

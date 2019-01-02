@@ -34,6 +34,14 @@ public class Player {
 
     public Card displayCard(int index) { return hand.get(index); }
 
+    public String getCards(){
+        String total = "";
+        for(Card c: hand){
+            total += c.getFaceValue() + " ";
+        }
+        return total;
+    }
+
     public ArrayList<String> getPlayerCards(){
         String playerCards = "";
         ArrayList<String> cards = new ArrayList<>();

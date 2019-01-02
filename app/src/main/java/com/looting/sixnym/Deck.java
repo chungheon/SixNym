@@ -8,6 +8,8 @@
 //Author: Loo Ting Xian
 package com.looting.sixnym;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -35,4 +37,12 @@ public class Deck {
     public void shuffleDeck(){ Collections.shuffle(deckOfCards); }
 
     public int getSize(){ return deckOfCards.size();}
+
+    public void fillDeck(int numPlayers){
+        deckOfCards.clear();
+        for(int i = 1; i <= (numPlayers*10) + 4 ; i++){
+            Card card = new Card(i);
+            deckOfCards.add(card);
+        }
+    }
 }

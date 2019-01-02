@@ -30,6 +30,21 @@ public class Card {
         this.pointValue = pointValue;
     }
 
+    public Card(int faceValue){
+        this.faceValue = faceValue;
+        if(faceValue == 55) {
+            this.pointValue = 7;
+        }else if(faceValue%11 == 0){
+            this.pointValue = 5;
+        }else if(faceValue%10 == 0){
+            this.pointValue = 3;
+        }else if(faceValue%5 ==0){
+            this.pointValue = 2;
+        }else {
+            this.pointValue = 1;
+        }
+    }
+
     //Set the face and point value of the card
     public void setCard(int faceValue, int pointValue){
         this.faceValue = faceValue;
