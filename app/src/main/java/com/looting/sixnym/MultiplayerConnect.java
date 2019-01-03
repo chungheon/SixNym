@@ -263,6 +263,7 @@ public class MultiplayerConnect extends Activity {
                     Card c = new Card(Integer.parseInt(info[i]));
                     players.get(0).getCard(c);
                 }
+                playBtn.setVisibility(View.VISIBLE);
                 vm.displayPlayerHands(playerNum, players.get(0).getPlayerCards(),info[info.length-1]);
                 sendReceive.write(("HandDone " + playerNum).getBytes());
             }else if(info[0].equals("CardRow")){
@@ -282,6 +283,26 @@ public class MultiplayerConnect extends Activity {
                 vm.displayRows(cardRows);
             }else if(info[0].equals("Placed")){
                 hands.setText(info[1] + " has placed down card\n" + hands.getText().toString());
+            }else if(info[0].equals("SelectRow")){
+                if(playerNum.equals(info[1])){
+                    String temp = "";
+                    for(int i = 2; i < info.length; i++){
+                        temp += info[i];
+                    }
+                    vm.selectRowDialog(playerNum, temp);
+                }else{
+                    String temp = "";
+                    for(int i = 2; i < info.length; i++){
+                        temp += info[i];
+                    }
+                    hands.setText(temp + "\nPlayer " + info[1] + " is selecting a row please wait");
+                }
+            }else if(info[0].equals("PlayCards")){
+                String temp = "";
+                for(int i = 1; i < info.length; i++) {
+                    temp += info[i];
+                }
+                hands.setText(temp);
             }
         }
     }
@@ -322,6 +343,8 @@ public class MultiplayerConnect extends Activity {
         this.rows = findViewById(R.id.rows);
         this.points = (TextView) findViewById(R.id.points);
         this.playBtn = (Button) findViewById(R.id.playCard);
+        playBtn.setVisibility(View.GONE);
+        rows.setVisibility(View.GONE);
         this.selectBtn = (Button) findViewById(R.id.selectButton);
         gameListeners();
         this.rv = findViewById(R.id.cardDisplay);
@@ -354,6 +377,9 @@ public class MultiplayerConnect extends Activity {
         this.rv.setLayoutManager(lm);
         this.tb = new TableCards();
         cardPlay = new int[players.size()];
+        for(int i = 0; i < cardPlay.length; i++){
+            cardPlay[i] = -1;
+        }
         hostListener();
         playerNum = "0";
         players.add(new Player(playerNum));
@@ -384,9 +410,13 @@ public class MultiplayerConnect extends Activity {
                     broadcastMsg("Placed " + playerNum);
                     hands.setText("0 has placed down card\n" + hands.getText().toString());
                     cardPlay[0] = vm.getCardPlayed();
+                    playBtn.setText("Show cards");
                     finish = true;
                 }else{
                     //Play cards
+                    hostGame.showCards(cardPlay);
+                    playBtn.setText("Play Card");
+                    String message = hostGame.playCard(cardPlay);
                 }
 
             }
