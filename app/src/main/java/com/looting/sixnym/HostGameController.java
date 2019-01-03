@@ -11,7 +11,7 @@ public class HostGameController {
     private Deck deck;
     private ViewManager vm;
     private ArrayList<Player> pArray;
-    private ArrayList<GameController.CardPlayed> cardsPlayed;
+    private ArrayList<CardPlayed> cardsPlayed;
     private int turn;
 
 
@@ -20,7 +20,7 @@ public class HostGameController {
         this.vm = vm;
         this.pArray = pArray;
         deck = new Deck();
-        cardsPlayed = new ArrayList<GameController.CardPlayed>();
+        cardsPlayed = new ArrayList<CardPlayed>();
         deck.fillDeck(pArray.size());
         deck.shuffleDeck();
         Log.d("PlayerSize", pArray.size() + "", null);
@@ -49,10 +49,7 @@ public class HostGameController {
     public String getCards(int player){
         return pArray.get(player).getCards();
     }
-
-    public void showCards(int[] cardPlayed) {
-
-    }
+    
 
     private void placeCardOnRow(Card cardToBePlaced){
         int cntRow = closestRow(cardToBePlaced);
@@ -88,32 +85,38 @@ public class HostGameController {
         return cntRow;
     }
 
-    public String playCard(int[] cardsPlayed){
-        ArrayList<CardPlayed> cpArray = new ArrayList<>();
-        int count = 0;
-        for(int i: cardsPlayed){
-            Card c = pArray.get(count).playCard(i);
-            CardPlayed cp = new CardPlayed(c, count);
-            cpArray.add(cp);
-            count++;
-        }
-            Collections.sort(cpArray);
-            if (closestRow(cpArray.get(0).card) == -1) {
-                String message = "SelectRow " + cpArray.get(0).playerIndex + " ";
-                for (CardPlayed cardP : cpArray) {
+    public String playCard(ArrayList<CardPlayed> cardsPlayed){
+        this.cardsPlayed = cardsPlayed;
+            Collections.sort(this.cardsPlayed);
+            if (closestRow(this.cardsPlayed.get(0).card) == -1) {
+                String message = "SelectRow " + this.cardsPlayed.get(0).playerIndex + " ";
+                for (CardPlayed cardP : this.cardsPlayed) {
                     message += pArray.get(cardP.playerIndex).getName() + " played " + cardP.card.displayCard() + " ";
                 }
                 return message;
             } else {
                 String message = "PlayCards ";
-                for (CardPlayed cardP : cpArray) {
+                for (CardPlayed cardP : this.cardsPlayed) {
                     message += pArray.get(cardP.playerIndex).getName() + " played " + cardP.card.displayCard() + " ";
+                }
+                for(CardPlayed cp: cardsPlayed){
+                    placeCardOnRow(cp.card);
                 }
                 return message;
             }
     }
 
-    public class CardPlayed implements Comparable<CardPlayed> {
+    public void selectRow(int rowSelected){
+        int cardRowSize = tb.getCardRow(rowSelected).getSize();
+        CardRow cardRow = tb.getCardRow(rowSelected);
+        for (int i = 0; i < cardRowSize;i++ ) {
+            pArray.get(cardsPlayed.get(0).playerIndex).addPoints(cardRow.removeFromRow());
+        }
+        this.tb.getCardRows().get(rowSelected).addToRow(cardsPlayed.get(0).card);
+        this.cardsPlayed.remove(0);
+    }
+
+    public static class CardPlayed implements Comparable<CardPlayed> {
         public Card card;
         public int playerIndex;
         public CardPlayed(Card c, int p){
@@ -126,5 +129,9 @@ public class HostGameController {
         public int compareTo(CardPlayed otherCard) {
             return (this.getCard() - otherCard.getCard());
         }
+    }
+
+    public String getUpdate(){
+        return "";
     }
 }

@@ -44,7 +44,7 @@ public class SinglePlayer extends Activity {
         Button playBtn = (Button) findViewById(R.id.playCard);
         Button selectBtn = (Button) findViewById(R.id.selectButton);
         RecyclerView rv = findViewById(R.id.cardDisplay);
-        LinearLayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rv.setLayoutManager(lm);
 
         ViewManager vm = new ViewManager(hands, rows, points, playBtn, selectBtn, rv, this);

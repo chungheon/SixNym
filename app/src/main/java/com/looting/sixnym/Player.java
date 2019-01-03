@@ -39,6 +39,15 @@ public class Player {
         for(Card c: hand){
             total += c.getFaceValue() + " ";
         }
+        if(points.size() == 0){
+            total += "split0";
+        }else{
+            total += "split";
+            for(Card c: points){
+                total += getTotalPoints();
+            }
+        }
+
         return total;
     }
 
@@ -95,8 +104,8 @@ public class Player {
 
     }
 
-
-
-
-
+    public void clearPlayer(){
+        hand.clear();
+        points.clear();
+    }
 }
