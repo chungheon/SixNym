@@ -32,6 +32,9 @@ public class HostGameController {
                 p.getCard(deck.dealCard());
             }
         }
+        for(Player p: pArray){
+            p.sortHand();
+        }
         tb.addToRow(deck.dealCard(), 0);
         tb.addToRow(deck.dealCard(), 1);
         tb.addToRow(deck.dealCard(), 2);
@@ -86,7 +89,7 @@ public class HostGameController {
     }
 
     public String playCard(ArrayList<CardPlayed> cardsPlayed){
-        this.cardsPlayed = cardsPlayed;
+        this.cardsPlayed = new ArrayList<>(cardsPlayed);
             Collections.sort(this.cardsPlayed);
             if (closestRow(this.cardsPlayed.get(0).card) == -1) {
                 String message = "SelectRow " + this.cardsPlayed.get(0).playerIndex + " ";
@@ -114,6 +117,9 @@ public class HostGameController {
         }
         this.tb.getCardRows().get(rowSelected).addToRow(cardsPlayed.get(0).card);
         this.cardsPlayed.remove(0);
+        for(CardPlayed cp: cardsPlayed){
+            placeCardOnRow(cp.card);
+        }
     }
 
     public static class CardPlayed implements Comparable<CardPlayed> {
@@ -131,7 +137,4 @@ public class HostGameController {
         }
     }
 
-    public String getUpdate(){
-        return "";
-    }
 }

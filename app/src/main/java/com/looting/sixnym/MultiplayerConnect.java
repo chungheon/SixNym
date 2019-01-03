@@ -261,10 +261,14 @@ public class MultiplayerConnect extends Activity {
             }else if(info[0].equals("HandCards")){
                 String[] cards = msg.split("split");
                 info = cards[0].split(" ");
+                String[] points = cards[1].split(" ");
                 players.get(0).clearPlayer();
-                for(int i = 1; i < info.length - 1; i++){
+                for(int i = 1; i < info.length; i++){
                     Card c = new Card(Integer.parseInt(info[i]));
                     players.get(0).getCard(c);
+                }
+                for(int i = 0; i < points.length; i++){
+
                 }
                 playBtn.setVisibility(View.VISIBLE);
                 vm.displayPlayerHands(playerNum, players.get(0).getPlayerCards(), cards[1]);
@@ -303,7 +307,11 @@ public class MultiplayerConnect extends Activity {
             }else if(info[0].equals("PlayCards")){
                 String temp = "";
                 for(int i = 1; i < info.length; i++) {
-                    temp += info[i];
+                    if(i%6 == 0){
+                        temp += info[i] + "\n";
+                    }else{
+                        temp += info[i];
+                    }
                 }
                 hands.setText(temp);
             }
@@ -326,7 +334,8 @@ public class MultiplayerConnect extends Activity {
             cardsPlayed.add(cp);
         }else if(info[0].equals("SelectedRow")){
             hostGame.selectRow(Integer.parseInt(info[1]));
-            String update = hostGame.getUpdate();
+            updateAll();
+            vm.endRowDialog();
         }
     }
 
@@ -373,8 +382,9 @@ public class MultiplayerConnect extends Activity {
         playBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if(vm.getCardPlayed() != -1){
-                    sendReceive.write(("PlayCard " + playerNum + " " + vm.getCardPlayed()).getBytes());
+                int card = vm.getCardPlayed();
+                if(card != -1){
+                    sendReceive.write(("PlayCard " + playerNum + " " + card).getBytes());
                     playBtn.setVisibility(View.GONE);
                 }else{
                     Toast.makeText(getApplicationContext(), "Please select a card", Toast.LENGTH_SHORT).show();
@@ -387,6 +397,7 @@ public class MultiplayerConnect extends Activity {
                 int i = vm.getRowSelected();
                 if(i != -1){
                     sendReceive.write(("SelectedRow " + i).getBytes());
+                    vm.endRowDialog();
                 }else{
                     Toast.makeText(getApplicationContext(), "Please select a row", Toast.LENGTH_SHORT).show();
                 }
@@ -435,10 +446,11 @@ public class MultiplayerConnect extends Activity {
             @Override
             public void onClick(View v) {
                 if(!finish){
-                    if(vm.getCardPlayed() != -1){
+                    int card = vm.getCardPlayed();
+                    if(card != -1){
                         broadcastMsg("Placed " + playerNum);
                         hands.setText("0 has placed down card\n" + hands.getText().toString());
-                        Card c = players.get(0).playCard(vm.getCardPlayed()-1);
+                        Card c = players.get(0).playCard(card -1);
                         HostGameController.CardPlayed cp = new HostGameController.CardPlayed(c, 0);
                         cardsPlayed.add(cp);
                         playBtn.setText("Show cards");
@@ -461,7 +473,12 @@ public class MultiplayerConnect extends Activity {
                             temp += info[i] + " ";
                         }
                         if(info[1].equals(playerNum)){
-                            vm.selectRowDialog(playerNum, temp);
+                            try {
+                                Thread.sleep(800);
+                                vm.selectRowDialog(playerNum, temp);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }else{
                             hands.setText(temp + "\nPlayer " + info[1] + " selecting row, wait...");
                         }
@@ -470,25 +487,7 @@ public class MultiplayerConnect extends Activity {
                             temp += info[i] + " ";
                         }
                         hands.setText(temp);
-                        try {
-                            Thread.sleep(200);
-                            String cardRows = updateRow();
-                            broadcastMsg(cardRows);
-
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        try {
-                            Thread.sleep(300);
-                            vm.displayRows(hostGame.getCardRows());
-                            vm.displayPlayerHands(playerNum, players.get(0).getPlayerCards(), players.get(0).getTotalPoints());
-                            updateHands();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-
+                        updateAll();
                         playBtn.setVisibility(View.VISIBLE);
                     }
                 }
@@ -499,9 +498,36 @@ public class MultiplayerConnect extends Activity {
         selectBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
+                int i = vm.getRowSelected();
+                if(i != -1){
+                    hostGame.selectRow(i);
+                    updateAll();
+                    vm.endRowDialog();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Please select a row", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+
+    public void updateAll(){
+        try {
+            Thread.sleep(800);
+            String cardRows = updateRow();
+            broadcastMsg(cardRows);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Thread.sleep(1000);
+            vm.displayRows(hostGame.getCardRows());
+            vm.displayPlayerHands(playerNum, players.get(0).getPlayerCards(), players.get(0).getTotalPoints());
+            updateHands();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateHands(){

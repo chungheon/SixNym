@@ -43,9 +43,7 @@ public class Player {
             total += "split0";
         }else{
             total += "split";
-            for(Card c: points){
-                total += getTotalPoints();
-            }
+            total += getTotalPoints();
         }
 
         return total;
